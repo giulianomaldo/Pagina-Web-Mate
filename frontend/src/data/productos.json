@@ -1,0 +1,208 @@
+[
+  {
+    "id": 1,
+    "nombre": "Mate Imperial Camionero",
+    "marca": "Imperial",
+    "categoria": "mates",
+    "tipo": "Mate de madera",
+    "precio": 18500,
+    "stock": 12,
+    "imagen": "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=600&q=80",
+    "imagenes": [
+      "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=800&q=80",
+      "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?w=800&q=80"
+    ],
+    "descripcion": "Mate de madera torneada artesanalmente. Tratado con aceites naturales para prolongar su vida útil. Ideal para el uso diario. Capacidad 250ml.",
+    "destacado": true,
+    "nuevo": false,
+    "masVendido": true
+  },
+  {
+    "id": 2,
+    "nombre": "Mate Silicona Flex Pro",
+    "marca": "TerraFlex",
+    "categoria": "mates",
+    "tipo": "Mate de silicona",
+    "precio": 12900,
+    "stock": 25,
+    "imagen": "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=600&q=80",
+    "imagenes": [
+      "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=800&q=80"
+    ],
+    "descripcion": "Mate de silicona alimentaria flexible, irrompible y fácil de limpiar. Perfecto para viajeros y actividades al aire libre. Libre de BPA.",
+    "destacado": false,
+    "nuevo": true,
+    "masVendido": false
+  },
+  {
+    "id": 3,
+    "nombre": "Mate Calabaza Natural",
+    "marca": "Del Campo",
+    "categoria": "mates",
+    "tipo": "Calabaza curada",
+    "precio": 9800,
+    "stock": 8,
+    "imagen": "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=600&q=80",
+    "imagenes": [
+      "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=800&q=80"
+    ],
+    "descripcion": "Calabaza curada a mano con proceso artesanal. Única en forma y color. Cada unidad es irrepetible, directamente del productor.",
+    "destacado": true,
+    "nuevo": false,
+    "masVendido": false
+  },
+  {
+    "id": 4,
+    "nombre": "Bombilla Artesanal Punta Fina",
+    "marca": "Gaucho Tools",
+    "categoria": "bombillas",
+    "tipo": "Bombilla de acero inox",
+    "precio": 7200,
+    "stock": 40,
+    "imagen": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
+    "imagenes": [
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"
+    ],
+    "descripcion": "Bombilla de acero inoxidable 316L con filtro de punta fina. Anti-tapón, fácil de limpiar. Longitud 19cm.",
+    "destacado": false,
+    "nuevo": false,
+    "masVendido": true
+  },
+  {
+    "id": 5,
+    "nombre": "Bombilla Cucharita Alpaca",
+    "marca": "Ranquel",
+    "categoria": "bombillas",
+    "tipo": "Bombilla alpaca",
+    "precio": 11500,
+    "stock": 18,
+    "imagen": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=80",
+    "imagenes": [
+      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80"
+    ],
+    "descripcion": "Bombilla cucharita en alpaca plateada con diseño clásico. Acabado artesanal. La elección de los entendidos.",
+    "destacado": true,
+    "nuevo": false,
+    "masVendido": false
+  },
+  {
+    "id": 6,
+    "nombre": "Termo Stanley Clásico 1L",
+    "marca": "Stanley",
+    "categoria": "termos",
+    "tipo": "Termo acero inox",
+    "precio": 68000,
+    "stock": 5,
+    "imagen": "https://images.unsplash.com/photo-1506619216599-9d16d0903dfd?w=600&q=80",
+    "imagenes": [
+      "https://images.unsplash.com/photo-1506619216599-9d16d0903dfd?w=800&q=80",
+      "https://images.unsplash.com/photo-1585155770447-2f66e2a397b5?w=800&q=80"
+    ],
+    "descripcion": "Termo Stanley clásico 1 litro. Acero inoxidable 18/8, doble pared al vacío. Mantiene temperatura 24hs caliente y 24hs frío.",
+    "destacado": true,
+    "nuevo": false,
+    "masVendido": true
+  },
+  {
+    "id": 7,
+    "nombre": "Termo Patagonia Trekker 750ml",
+    "marca": "Patagonia Goods",
+    "categoria": "termos",
+    "tipo": "Termo acero inox",
+    "precio": 42500,
+    "stock": 14,
+    "imagen": "https://images.unsplash.com/photo-1543332164-6e82f355badc?w=600&q=80",
+    "imagenes": [
+      "https://images.unsplash.com/photo-1543332164-6e82f355badc?w=800&q=80"
+    ],
+    "descripcion": "Termo de 750ml con tapa que sirve como vaso. Liviano y resistente para la montaña. Doble capa de aislación.",
+    "destacado": false,
+    "nuevo": true,
+    "masVendido": false
+  },
+  {
+    "id": 8,
+    "nombre": "Yerba Amanda Tradicional 1kg",
+    "marca": "Amanda",
+    "categoria": "yerbas",
+    "tipo": "Yerba con palo",
+    "precio": 5800,
+    "stock": 60,
+    "imagen": "https://images.unsplash.com/photo-1563822249366-3efb23b8e0c9?w=600&q=80",
+    "imagenes": [
+      "https://images.unsplash.com/photo-1563822249366-3efb23b8e0c9?w=800&q=80"
+    ],
+    "descripcion": "Yerba mate Amanda con palo, elaboración tradicional misionera. Curada durante 12 meses. Sabor suave y equilibrado, ideal para compartir.",
+    "destacado": false,
+    "nuevo": false,
+    "masVendido": true
+  },
+  {
+    "id": 9,
+    "nombre": "Yerba CBSé Energía 500g",
+    "marca": "CBSé",
+    "categoria": "yerbas",
+    "tipo": "Yerba compuesta",
+    "precio": 4200,
+    "stock": 35,
+    "imagen": "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=600&q=80",
+    "imagenes": [
+      "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=800&q=80"
+    ],
+    "descripcion": "Yerba compuesta con guaraná, ginseng y hierbas energizantes. Perfecta para arrancar el día con toda la energía.",
+    "destacado": false,
+    "nuevo": false,
+    "masVendido": false
+  },
+  {
+    "id": 10,
+    "nombre": "Blend Relax — Menta & Manzanilla",
+    "marca": "La Yerbería Blends",
+    "categoria": "blends",
+    "tipo": "Blend de hierbas",
+    "precio": 9600,
+    "stock": 22,
+    "imagen": "https://images.unsplash.com/photo-1597481499750-3e6b22637536?w=600&q=80",
+    "imagenes": [
+      "https://images.unsplash.com/photo-1597481499750-3e6b22637536?w=800&q=80"
+    ],
+    "descripcion": "Blend relajante de menta piperita, manzanilla y tilo. Ideal para tomar antes de dormir. Sin cafeína. 50 gramos.",
+    "destacado": true,
+    "nuevo": true,
+    "masVendido": false
+  },
+  {
+    "id": 11,
+    "nombre": "Blend Forest — Té Verde & Jengibre",
+    "marca": "La Yerbería Blends",
+    "categoria": "blends",
+    "tipo": "Blend de té",
+    "precio": 11200,
+    "stock": 18,
+    "imagen": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=600&q=80",
+    "imagenes": [
+      "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=800&q=80"
+    ],
+    "descripcion": "Té verde premium con jengibre fresco, limón y menta. Antioxidante y energizante. Infusionar 3 minutos en agua a 80°C. 50 gramos.",
+    "destacado": true,
+    "nuevo": false,
+    "masVendido": false
+  },
+  {
+    "id": 12,
+    "nombre": "Blend Otoño — Canela & Naranja",
+    "marca": "La Yerbería Blends",
+    "categoria": "blends",
+    "tipo": "Blend de té",
+    "precio": 10400,
+    "stock": 30,
+    "imagen": "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&q=80",
+    "imagenes": [
+      "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=800&q=80"
+    ],
+    "descripcion": "Blend otoñal con canela, cáscara de naranja, hibisco y clavo de olor. Aromático y reconfortante. Infusionar 5 minutos.",
+    "destacado": false,
+    "nuevo": true,
+    "masVendido": false
+  }
+]

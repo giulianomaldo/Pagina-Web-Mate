@@ -1,92 +1,198 @@
-# 🛒 Tienda Virtual (E-commerce)
+# 🌿 La Yerbería — Tienda Virtual de Mates & Té Premium
 
-Este proyecto es una aplicación web completa para una tienda virtual, construida con un stack de tecnologías moderno separando la lógica del cliente (**Frontend**) y del servidor (**Backend**).
+Aplicación web de e-commerce completa para una tienda de mates, bombillas, termos, yerbas y blends de té. Arquitectura **Frontend + Backend** desacoplada, lista para producción.
 
-## 🚀 Tecnologías Principales
+---
 
-- **Frontend:** React, Vite, JavaScript, HTML, CSS.
-- **Backend:** Node.js, Express.js.
-- **Base de Datos:** SQLite.
-- **Testing:** Vitest + React Testing Library (Frontend), Jest + Supertest (Backend).
+## 🚀 Stack Tecnológico
+
+| Capa | Tecnologías |
+|---|---|
+| **Frontend** | React 19, Vite, JavaScript, CSS Modules, HTML5 |
+| **Routing** | React Router v7 |
+| **Animaciones** | Framer Motion |
+| **Estado global** | Context API + useReducer |
+| **Notificaciones** | React Hot Toast |
+| **Backend** | Node.js, Express.js |
+| **Base de datos** | SQLite (sqlite3) |
+| **Tests Frontend** | Vitest + React Testing Library |
+| **Tests Backend** | Jest + Supertest |
+
+---
 
 ## 📂 Estructura del Proyecto
 
-El proyecto está dividido en dos directorios principales:
-
-### `frontend/` (Cliente)
-Aplicación React inicializada con Vite.
-- `src/components/`: Componentes UI reutilizables (Botones, Tarjetas, Navbar).
-- `src/pages/`: Vistas de la aplicación (Home, Carrito, Detalles del producto).
-- `src/services/`: Lógica de comunicación con la API del backend.
-- `src/hooks/`: Custom Hooks de React.
-- `src/context/`: Manejo del estado global de la aplicación.
-- `src/utils/`: Funciones auxiliares y formateadores.
-- `src/styles/`: Hojas de estilo CSS.
-
-### `backend/` (Servidor API)
-API REST desarrollada en Node.js y Express.
-- `src/routes/`: Definición de los endpoints de la API.
-- `src/controllers/`: Controladores encargados de manejar las solicitudes HTTP.
-- `src/services/`: Lógica de negocio (Cálculos de precios, reglas de compra).
-- `src/models/`: Interacción directa con la base de datos (SQLite).
-- `src/middlewares/`: Funciones intermedias (Autenticación, logs, manejo de errores).
-- `src/config/`: Configuraciones de variables de entorno y base de datos.
-- `src/db/`: Archivos físicos de la base de datos `.sqlite` y migraciones.
-- `src/utils/`: Funciones de utilidad general compartidas.
-- `tests/`: Pruebas de integración de la API.
-
-## 🛠️ Instalación y Configuración
-
-Asegúrate de tener instalado [Node.js](https://nodejs.org/) en tu equipo.
-
-### 1. Backend
-```bash
-cd backend
-npm install
 ```
-
-### 2. Frontend
-```bash
-cd frontend
-npm install
-```
-
-## ▶️ Ejecución en Desarrollo
-
-Para trabajar en el proyecto, necesitas levantar ambos servicios en simultáneo usando dos terminales:
-
-**Terminal 1 (Backend):**
-```bash
-cd backend
-node src/index.js
-```
-*(El servidor correrá en el puerto 3000 por defecto).*
-
-**Terminal 2 (Frontend):**
-```bash
-cd frontend
-npm run dev
-```
-
-## 🧪 Testing
-
-Ambos entornos están completamente configurados con herramientas de pruebas profesionales.
-
-**Backend (Jest + Supertest):**
-```bash
-cd backend
-npm run test
-# o para que quede escuchando los cambios:
-npm run test:watch
-```
-
-**Frontend (Vitest + React Testing Library):**
-```bash
-cd frontend
-npm run test
-# o para la interfaz visual de vitest:
-npm run test:ui
+PW-MATE/
+├── frontend/
+│   ├── src/
+│   │   ├── assets/             # Imágenes y recursos estáticos
+│   │   ├── components/         # Componentes UI reutilizables
+│   │   │   ├── Badge/
+│   │   │   ├── Button/
+│   │   │   ├── CartDrawer/     # Panel lateral del carrito
+│   │   │   ├── Footer/
+│   │   │   ├── Navbar/         # Barra de navegación sticky
+│   │   │   ├── ProductCard/    # Tarjeta de producto
+│   │   │   ├── ProductGrid/    # Grilla de productos + skeleton
+│   │   │   ├── ScrollToTop/
+│   │   │   └── Skeleton/       # Estados de carga
+│   │   ├── context/
+│   │   │   └── CartContext.jsx # Estado global del carrito (persist.)
+│   │   ├── data/
+│   │   │   └── productos.json  # ← AQUÍ SE AGREGAN PRODUCTOS
+│   │   ├── hooks/
+│   │   │   ├── useFiltros.js   # Lógica de filtros y búsqueda
+│   │   │   └── useScrollTop.js
+│   │   ├── layouts/
+│   │   │   └── MainLayout.jsx  # Layout raíz con Navbar+Footer
+│   │   ├── pages/
+│   │   │   ├── Home/           # Página de inicio (Hero+Categorías+Destacados)
+│   │   │   ├── Productos/      # Catálogo con filtros
+│   │   │   ├── ProductoDetalle/# Detalle individual
+│   │   │   ├── Nosotros/
+│   │   │   ├── Contacto/
+│   │   │   └── NotFound/       # Página 404
+│   │   ├── styles/
+│   │   │   ├── variables.css   # Design tokens (colores, tipografía, etc.)
+│   │   │   └── global.css      # Reset y estilos base
+│   │   ├── utils/
+│   │   │   ├── constants.js    # WhatsApp, categorías, etc.
+│   │   │   └── helpers.js      # Formateo, filtrado, mensaje WA
+│   │   ├── App.jsx             # Rutas + Providers
+│   │   └── main.jsx            # Entry point
+│   ├── index.html
+│   ├── vite.config.js
+│   └── package.json
+│
+└── backend/
+    ├── src/
+    │   ├── app.js              # Express app (sin listen)
+    │   ├── index.js            # Servidor (listen)
+    │   ├── config/
+    │   ├── controllers/
+    │   ├── db/                 # Archivos .sqlite
+    │   ├── middlewares/
+    │   ├── models/
+    │   ├── routes/
+    │   ├── services/
+    │   └── utils/
+    ├── tests/
+    │   └── app.test.js
+    └── package.json
 ```
 
 ---
-*📝 **Mantenimiento del Documento**: Este archivo `README.md` se irá modificando y actualizando automáticamente a medida que avancemos con la creación de tablas, rutas y funcionalidades de la tienda.*
+
+## 🛍️ Flujo de compra
+
+```
+Usuario entra → Navega / Busca / Filtra → Agrega al carrito
+→ Abre drawer del carrito → Finalizar pedido → WhatsApp con el pedido completo
+```
+
+El número de WhatsApp es una **constante centralizada** en `frontend/src/utils/constants.js`:
+
+```js
+export const WHATSAPP_NUMBER = '5491100000000'; // ← Cambiar aquí
+```
+
+---
+
+## ➕ Cómo agregar nuevos productos
+
+Solo editá el archivo `frontend/src/data/productos.json`. Cada producto tiene esta forma:
+
+```json
+{
+  "id": 13,
+  "nombre": "Mi Nuevo Producto",
+  "marca": "Mi Marca",
+  "categoria": "mates",
+  "tipo": "Mate artesanal",
+  "precio": 15000,
+  "stock": 20,
+  "imagen": "https://url-de-la-imagen.com/foto.jpg",
+  "imagenes": ["url1", "url2"],
+  "descripcion": "Descripción del producto.",
+  "destacado": false,
+  "nuevo": true,
+  "masVendido": false
+}
+```
+
+**Categorías disponibles:** `mates` | `bombillas` | `termos` | `yerbas` | `blends`
+
+---
+
+## 🛠️ Instalación
+
+```bash
+# Frontend
+cd frontend
+npm install
+
+# Backend
+cd backend
+npm install
+```
+
+## ▶️ Modo desarrollo
+
+**Terminal 1 — Frontend:**
+```bash
+cd frontend
+npm run dev
+# → http://localhost:5173
+```
+
+**Terminal 2 — Backend:**
+```bash
+cd backend
+node src/index.js
+# → http://localhost:3000
+```
+
+## 🧪 Tests
+
+```bash
+# Backend (Jest + Supertest)
+cd backend
+npm run test
+
+# Frontend (Vitest + React Testing Library)
+cd frontend
+npm run test
+```
+
+---
+
+## 🎨 Paleta de colores
+
+| Token | Hex | Uso |
+|---|---|---|
+| `--color-deep-green` | `#23391c` | Color primario, CTAs |
+| `--color-forest` | `#2e3b23` | Hover primario |
+| `--color-mid-green` | `#404d36` | Acentos |
+| `--color-sage` | `#828d78` | Texto secundario |
+| `--color-olive` | `#62675c` | Muted |
+| `--color-stone` | `#8d8479` | Badges |
+| `--color-bg` | `#bfbdb6` | Fondo neutro |
+| `--color-black` | `#0a0a0e` | Textos oscuros |
+
+---
+
+## 📋 Páginas incluidas
+
+| Ruta | Página |
+|---|---|
+| `/` | Home (Hero + Categorías + Destacados) |
+| `/productos` | Catálogo con búsqueda y filtros |
+| `/producto/:id` | Detalle individual del producto |
+| `/nosotros` | Historia y valores de la marca |
+| `/contacto` | Datos y WhatsApp |
+| `/*` | Página 404 |
+
+---
+
+*📝 Este README se actualiza automáticamente con cada cambio relevante en el proyecto.*

@@ -1,0 +1,20 @@
+.cta {
+  text-align: center;
+  margin-top: var(--space-10);
+}
+
+.ctaLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-accent);
+  font-weight: 600;
+  font-size: var(--text-base);
+  color: var(--color-primary);
+  text-decoration: none;
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: var(--space-1);
+  transition: color var(--transition-base), border-color var(--transition-base);
+}
+
+.ctaLink:hover { color: var(--color-forest); border-color: var(--color-forest); }

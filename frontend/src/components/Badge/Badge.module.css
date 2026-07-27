@@ -1,0 +1,17 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-family: var(--font-accent);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.default    { background: var(--color-surface-alt); color: var(--color-text-muted); }
+.nuevo      { background: var(--color-mid-green);   color: #fff; }
+.destacado  { background: var(--color-deep-green);  color: #fff; }
+.masVendido { background: var(--color-stone);       color: #fff; }
+.sinStock   { background: #c0392b;                  color: #fff; }
