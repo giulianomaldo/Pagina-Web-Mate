@@ -1,8 +1,9 @@
-import { WHATSAPP_NUMBER } from '../../utils/constants';
+import { useSiteConfig } from '../../hooks/useSiteConfig';
 import styles from './Contacto.module.css';
 
 export default function Contacto() {
-  const mensaje = encodeURIComponent('Hola! Quiero hacer una consulta sobre sus productos 🌿');
+  const { config } = useSiteConfig();
+  const mensaje = encodeURIComponent(config.whatsapp_mensaje);
 
   return (
     <div>
@@ -27,7 +28,7 @@ export default function Contacto() {
                 <div>
                   <h3>WhatsApp</h3>
                   <a
-                    href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensaje}`}
+                    href={`https://wa.me/${config.whatsapp_numero}?text=${mensaje}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.cardLink}
@@ -42,8 +43,8 @@ export default function Contacto() {
                 <span className={styles.cardIcon}>📍</span>
                 <div>
                   <h3>Ubicación</h3>
-                  <p>Buenos Aires, Argentina</p>
-                  <p className={styles.small}>Envíos a todo el país</p>
+                  <p>{config.ubicacion}</p>
+                  <p className={styles.small}>{config.envios_descripcion}</p>
                 </div>
               </div>
 
@@ -51,10 +52,25 @@ export default function Contacto() {
                 <span className={styles.cardIcon}>🕐</span>
                 <div>
                   <h3>Horarios</h3>
-                  <p>Lun–Vie: 9:00 a 18:00</p>
-                  <p>Sáb: 9:00 a 13:00</p>
+                  <p>{config.horario_semana}</p>
+                  <p>{config.horario_sabado}</p>
                 </div>
               </div>
+
+              {config.email && (
+                <div className={styles.card}>
+                  <span className={styles.cardIcon}>✉️</span>
+                  <div>
+                    <h3>Email</h3>
+                    <a
+                      href={`mailto:${config.email}`}
+                      className={styles.cardLink}
+                    >
+                      {config.email}
+                    </a>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -63,7 +79,7 @@ export default function Contacto() {
             <h3>¿Tenés una consulta?</h3>
             <p>Escribinos directamente por WhatsApp para ayudarte con tu pedido o resolver cualquier duda.</p>
             <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensaje}`}
+              href={`https://wa.me/${config.whatsapp_numero}?text=${mensaje}`}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.waBtn}

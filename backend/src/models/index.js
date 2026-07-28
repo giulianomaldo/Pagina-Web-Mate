@@ -17,6 +17,7 @@ const Categoria            = require('./Categoria');
 const Marca                = require('./Marca');
 const Proveedor            = require('./Proveedor');
 const UsuarioAdministrador = require('./UsuarioAdministrador');
+const Configuracion        = require('./Configuracion');
 
 // ── 2. Modelos dependientes ───────────────────────────────────────────
 const Producto             = require('./Producto');
@@ -152,6 +153,7 @@ Promocion.belongsToMany(Producto, {
 
 module.exports = {
   Categoria,
+  Configuracion,
   Marca,
   Proveedor,
   UsuarioAdministrador,

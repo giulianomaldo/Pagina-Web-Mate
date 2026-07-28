@@ -1,31 +1,25 @@
 'use strict';
 
+const path      = require('path');
 const { Sequelize } = require('sequelize');
 const { db, server } = require('./env');
 
-const sequelize = new Sequelize(db.name, db.user, db.password, {
-  host:     db.host,
-  port:     db.port,
-  dialect:  'mysql',
+// El archivo de la BD se guarda en la raíz del backend
+const dbStorage = db.storage || path.join(__dirname, '..', '..', 'database.sqlite');
+
+const sequelize = new Sequelize({
+  dialect:  'sqlite',
+  storage:  dbStorage,
 
   logging: server.isDev
     ? (sql) => console.log(`\n📦  [Sequelize] ${sql}\n`)
     : false,
 
-  pool: {
-    max:     10,   // conexiones simultáneas máximas
-    min:     0,
-    acquire: 30000, // ms para obtener conexión antes de lanzar error
-    idle:    10000, // ms en que una conexión inactiva se libera al pool
-  },
-
   define: {
-    underscored:    true,   // snake_case en columnas automáticamente
-    freezeTableName: false, // Sequelize pluraliza el nombre del modelo
-    timestamps:     true,   // createdAt / updatedAt automáticos
+    underscored:     true,
+    freezeTableName: false,
+    timestamps:      true,
   },
-
-  timezone: '-03:00', // Argentina
 });
 
 /**

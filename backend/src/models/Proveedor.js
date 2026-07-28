@@ -86,8 +86,8 @@ const Proveedor = sequelize.define('Proveedor', {
   timestamps:  true,
   underscored: true,
   indexes: [
-    { fields: ['email'],     unique: true, where: { email: { [require('sequelize').Op.ne]: null } } },
-    { fields: ['cuit'],      unique: true, where: { cuit:  { [require('sequelize').Op.ne]: null } } },
+    { fields: ['email'] },
+    { fields: ['cuit']  },
     { fields: ['is_active']                                                                         },
     { fields: ['provincia']                                                                         },
   ],

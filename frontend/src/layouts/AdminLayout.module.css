@@ -1,0 +1,304 @@
+/* ============================================================
+   AdminLayout — Panel de Administración
+   Sidebar oscuro + topbar + área de contenido
+   ============================================================ */
+
+/* ── Variables propias del panel (dark theme) ── */
+:root {
+  --admin-sidebar-w:     260px;
+  --admin-sidebar-bg:    #141a10;
+  --admin-sidebar-hover: #1e2a17;
+  --admin-sidebar-active:#2e3b23;
+  --admin-text-sidebar:  #c8d4bc;
+  --admin-text-muted:    #7a8a70;
+  --admin-accent:        #6ab04c;
+  --admin-accent-light:  rgba(106,176,76,0.12);
+  --admin-topbar-h:      60px;
+  --admin-bg:            #f4f5f0;
+  --admin-surface:       #ffffff;
+  --admin-border:        #e2e6dc;
+  --admin-danger:        #e05252;
+  --admin-warning:       #e0a000;
+  --admin-success:       #3d9e5f;
+}
+
+/* ── Layout raíz ── */
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--admin-bg);
+  font-family: var(--font-body, 'Inter', sans-serif);
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--admin-sidebar-w);
+  background: var(--admin-sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 200;
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #2e3b23 transparent;
+}
+
+.sidebarBrand {
+  padding: 1.5rem 1.25rem 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sidebarBrandIcon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.sidebarBrandName {
+  font-family: var(--font-display, Georgia, serif);
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.sidebarBrandSub {
+  color: var(--admin-text-muted);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.sidebarNav {
+  flex: 1;
+  padding: 0.75rem 0;
+}
+
+.sidebarSection {
+  padding: 0.75rem 1rem 0.25rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--admin-text-muted);
+}
+
+.sidebarLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1.25rem;
+  color: var(--admin-text-sidebar);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0;
+  transition: background 0.15s, color 0.15s;
+  position: relative;
+}
+
+.sidebarLink:hover {
+  background: var(--admin-sidebar-hover);
+  color: #ffffff;
+}
+
+.sidebarLinkActive {
+  background: var(--admin-sidebar-active);
+  color: #ffffff;
+}
+
+.sidebarLinkActive::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--admin-accent);
+  border-radius: 0 2px 2px 0;
+}
+
+.sidebarLinkIcon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  width: 1.5rem;
+  text-align: center;
+}
+
+.sidebarBottom {
+  padding: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.adminInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+}
+
+.adminAvatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--admin-sidebar-active);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--admin-accent);
+  flex-shrink: 0;
+}
+
+.adminName {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #e0e8d8;
+  line-height: 1.2;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adminRol {
+  font-size: 0.68rem;
+  color: var(--admin-text-muted);
+  text-transform: capitalize;
+}
+
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.55rem 0.75rem;
+  background: rgba(224,82,82,0.1);
+  color: #e08080;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  font-family: inherit;
+}
+
+.logoutBtn:hover {
+  background: rgba(224,82,82,0.2);
+  color: #f08080;
+}
+
+/* ── Overlay (mobile) ── */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 199;
+}
+
+/* ── Main area ── */
+.main {
+  margin-left: var(--admin-sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Topbar ── */
+.topbar {
+  height: var(--admin-topbar-h);
+  background: var(--admin-surface);
+  border-bottom: 1px solid var(--admin-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.menuToggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--admin-sidebar-bg);
+  padding: 0.25rem;
+}
+
+.topbarTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a2210;
+}
+
+.topbarRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.topbarAdminBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--admin-text-muted);
+}
+
+/* ── Content ── */
+.content {
+  flex: 1;
+  padding: 2rem 1.75rem;
+  overflow-y: auto;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .overlay {
+    display: block;
+  }
+
+  .main {
+    margin-left: 0;
+  }
+
+  .menuToggle {
+    display: flex;
+  }
+
+  .content {
+    padding: 1.25rem 1rem;
+  }
+}

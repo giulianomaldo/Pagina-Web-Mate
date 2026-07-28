@@ -174,12 +174,8 @@ const Producto = sequelize.define('Producto', {
     { fields: ['is_active', 'categoria_id']                               },
     { fields: ['precio']                                                   },
     { fields: ['stock']                                                    },
-    // Índice de texto completo para búsqueda rápida por nombre
-    {
-      name:   'ft_producto_nombre',
-      type:   'FULLTEXT',
-      fields: ['nombre'],
-    },
+    // Índice de texto (FULLTEXT solo en MySQL; en SQLite se usa LIKE)
+    { fields: ['nombre'] },
   ],
 });
 

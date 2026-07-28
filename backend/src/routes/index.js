@@ -32,6 +32,7 @@ router.use('/dashboard',  require('./dashboard.routes'));
 router.use('/ordenes',    require('./orden.routes'));
 router.use('/banners',    require('./banner.routes'));
 router.use('/promociones',require('./promocion.routes'));
-router.use('/admins',     require('./admin.routes'));
+router.use('/admins',        require('./admin.routes'));
+router.use('/configuracion', require('./configuracion.routes'));
 
 module.exports = router;

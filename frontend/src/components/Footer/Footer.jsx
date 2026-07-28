@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import { WHATSAPP_NUMBER } from '../../utils/constants';
+import { useSiteConfig } from '../../hooks/useSiteConfig';
 import Logo from '../../assets/Logo';
 import styles from './Footer.module.css';
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const { config } = useSiteConfig();
 
   return (
     <footer className={styles.footer} role="contentinfo">
@@ -20,7 +21,7 @@ export default function Footer() {
           </p>
           <div className={styles.social}>
             <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}`}
+              href={`https://wa.me/${config.whatsapp_numero}`}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp"
@@ -62,12 +63,12 @@ export default function Footer() {
         {/* Info */}
         <div className={styles.info}>
           <h4 className={styles.colTitle}>Información</h4>
-          <p>📍 Buenos Aires, Argentina</p>
-          <p>📦 Envíos a todo el país</p>
+          <p>📍 {config.ubicacion}</p>
+          <p>📦 {config.envios_descripcion}</p>
           <p className={styles.hours}>
             <strong>Horarios de atención</strong><br />
-            Lun–Vie: 9:00 a 18:00<br />
-            Sáb: 9:00 a 13:00
+            {config.horario_semana}<br />
+            {config.horario_sabado}
           </p>
         </div>
       </div>

@@ -8,10 +8,6 @@
 const REQUIRED_VARS = [
   'PORT',
   'NODE_ENV',
-  'DB_HOST',
-  'DB_PORT',
-  'DB_NAME',
-  'DB_USER',
   'JWT_SECRET',
   'JWT_REFRESH_SECRET',
   'CLIENT_URL',
@@ -38,6 +34,9 @@ module.exports = {
   },
 
   db: {
+    // SQLite (por defecto)
+    storage: process.env.DB_STORAGE || null,
+    // MySQL (opcional — para producción)
     host:     process.env.DB_HOST,
     port:     parseInt(process.env.DB_PORT, 10) || 3306,
     name:     process.env.DB_NAME,
