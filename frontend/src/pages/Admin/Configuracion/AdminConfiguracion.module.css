@@ -1,0 +1,104 @@
+.infoBox {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border-left: 4px solid #1976d2;
+}
+
+.alertSuccess {
+  background-color: #e8f5e9;
+  color: #1b5e20;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.alertError {
+  background-color: #ffebee;
+  color: #b71c1c;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+@media (min-width: 768px) {
+  .layout {
+    flex-direction: row;
+  }
+}
+
+.formContainer {
+  flex: 1;
+}
+
+.previewContainer {
+  flex: 1;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.previewCard {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.previewCard h4 {
+  margin-top: 15px;
+  margin-bottom: 10px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+.previewCard p {
+  margin: 5px 0;
+  color: #555;
+  font-size: 0.95em;
+}
+.previewMessage {
+  font-style: italic;
+  color: #777 !important;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.formGroup label {
+  font-weight: bold;
+  font-size: 0.9em;
+  color: #333;
+}
+.formGroup input,
+.formGroup textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+}
+.formGroup textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.helperText {
+  font-size: 0.8em;
+  color: #666;
+}

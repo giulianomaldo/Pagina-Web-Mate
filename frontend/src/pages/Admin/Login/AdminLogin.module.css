@@ -1,0 +1,130 @@
+/* AdminLogin.module.css */
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f4f6f3;
+  background-image: radial-gradient(#dbe3d7 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.loginCard {
+  background: white;
+  width: 100%;
+  max-width: 420px;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(20, 26, 16, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brand {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.emoji {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.title {
+  color: #141a10;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.subtitle {
+  color: #66785b;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  color: #2e3b23;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #dbe3d7;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #141a10;
+  transition: all 0.2s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #2e3b23;
+  box-shadow: 0 0 0 3px rgba(46, 59, 35, 0.1);
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #66785b;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 12px;
+}
+
+.submitButton {
+  background-color: #141a10;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 8px;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: #2e3b23;
+}
+
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.error {
+  background-color: #fdf3f2;
+  color: #d32f2f;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #faccd0;
+}

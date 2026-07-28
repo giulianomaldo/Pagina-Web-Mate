@@ -1,0 +1,35 @@
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.pulse {
+  background: linear-gradient(90deg, #e8e6e1 25%, #f0ede8 50%, #e8e6e1 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+.card {
+  background: #fff;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.image {
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-radius: 0;
+}
+
+.body { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); }
+
+.line { height: 14px; border-radius: var(--radius-full); }
+.short { width: 40%; }
+.long  { width: 80%; height: 20px; }
+.mid   { width: 55%; }
+
+.footer { display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-2); }
+.price  { width: 90px; height: 24px; border-radius: var(--radius-md); }
+.btn    { width: 90px; height: 36px; border-radius: var(--radius-md); }

@@ -9,11 +9,14 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest",
+    "test:watch": "vitest"
   },
   "dependencies": {
+    "framer-motion": "^11.0.0",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "react-hot-toast": "^2.4.1",
+    "react-router-dom": "^7.0.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^7.0.0",

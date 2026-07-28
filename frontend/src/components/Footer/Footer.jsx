@@ -1,0 +1,95 @@
+import { Link } from 'react-router-dom';
+import { useSiteConfig } from '../../hooks/useSiteConfig';
+import Logo from '../../assets/Logo';
+import styles from './Footer.module.css';
+
+export default function Footer() {
+  const year = new Date().getFullYear();
+  const { config } = useSiteConfig();
+
+  return (
+    <footer className={styles.footer} role="contentinfo">
+      <div className={`container ${styles.grid}`}>
+
+        {/* Marca con logo oficial */}
+        <div className={styles.brand}>
+          <Link to="/" className={styles.logoLink} aria-label="Encontrarte Infusiones — Volver al inicio">
+            <Logo height={40} theme="light" />
+          </Link>
+          <p className={styles.tagline}>
+            Mates, yerbas y blends premium<br /> para los que saben disfrutar.
+          </p>
+          <div className={styles.social}>
+            <a
+              href={`https://wa.me/${config.whatsapp_numero}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+              className={styles.socialLink}
+            >
+              <WhatsAppIcon />
+            </a>
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className={styles.socialLink}
+            >
+              <InstagramIcon />
+            </a>
+          </div>
+        </div>
+
+        {/* Links rápidos */}
+        <nav aria-label="Links rápidos" className={styles.links}>
+          <h4 className={styles.colTitle}>Navegación</h4>
+          <Link to="/">Inicio</Link>
+          <Link to="/productos">Catálogo</Link>
+          <Link to="/nosotros">Nosotros</Link>
+          <Link to="/contacto">Contacto</Link>
+        </nav>
+
+        {/* Categorías */}
+        <nav aria-label="Categorías" className={styles.links}>
+          <h4 className={styles.colTitle}>Categorías</h4>
+          <Link to="/productos?categoria=mates">🧉 Mates</Link>
+          <Link to="/productos?categoria=bombillas">🥄 Bombillas</Link>
+          <Link to="/productos?categoria=termos">🥤 Termos</Link>
+          <Link to="/productos?categoria=yerbas">🌿 Yerbas</Link>
+          <Link to="/productos?categoria=blends">🫖 Blends</Link>
+        </nav>
+
+        {/* Info */}
+        <div className={styles.info}>
+          <h4 className={styles.colTitle}>Información</h4>
+          <p>📍 {config.ubicacion}</p>
+          <p>📦 {config.envios_descripcion}</p>
+          <p className={styles.hours}>
+            <strong>Horarios de atención</strong><br />
+            {config.horario_semana}<br />
+            {config.horario_sabado}
+          </p>
+        </div>
+      </div>
+
+      <div className={styles.bottom}>
+        <p>© {year} Encontrarte Infusiones — Todos los derechos reservados.</p>
+      </div>
+    </footer>
+  );
+}
+
+const WhatsAppIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/>
+  </svg>
+);
+
+const InstagramIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+    <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/>
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+  </svg>
+);
