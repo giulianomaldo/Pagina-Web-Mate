@@ -20,17 +20,17 @@
 }
 
 /* Marca */
-.logo {
-  display: flex;
+.brand { display: flex; flex-direction: column; }
+
+.logoLink {
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: 700;
-  color: #fff;
   text-decoration: none;
   margin-bottom: var(--space-4);
+  max-width: 220px;
 }
+
+.logoLink svg { width: 100%; height: auto; }
 
 .tagline {
   font-size: var(--text-sm);

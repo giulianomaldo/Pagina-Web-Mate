@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
+import Logo from '../../assets/Logo';
 import styles from './Navbar.module.css';
 
 const NAV_LINKS = [
@@ -25,12 +26,17 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Cerrar menu al redimensionar a desktop
   useEffect(() => {
     const onResize = () => { if (window.innerWidth > 768) setMenuOpen(false); };
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, []);
+
+  // Bloquear scroll del body cuando el menú móvil está abierto
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
 
   const handleSearch = useCallback((e) => {
     e.preventDefault();
@@ -38,6 +44,7 @@ export default function Navbar() {
       navigate(`/productos?busqueda=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery('');
       setSearchOpen(false);
+      setMenuOpen(false);
     }
   }, [searchQuery, navigate]);
 
@@ -47,10 +54,10 @@ export default function Navbar() {
     <>
       <header className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`} role="banner">
         <div className={`container ${styles.inner}`}>
-          {/* Logo */}
-          <Link to="/" className={styles.logo} aria-label="La Yerbería — Inicio">
-            <span className={styles.logoIcon}>🌿</span>
-            <span className={styles.logoText}>La Yerbería</span>
+
+          {/* Logo oficial */}
+          <Link to="/" className={styles.logo} aria-label="Encontrarte Infusiones — Inicio">
+            <Logo height={44} theme="dark" />
           </Link>
 
           {/* Navegación Desktop */}
@@ -76,6 +83,7 @@ export default function Navbar() {
               className={styles.iconBtn}
               onClick={() => setSearchOpen((p) => !p)}
               aria-label="Abrir buscador"
+              aria-expanded={searchOpen}
             >
               <SearchIcon />
             </button>
@@ -106,6 +114,7 @@ export default function Navbar() {
               onClick={() => setMenuOpen((p) => !p)}
               aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
               aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
             >
               <span /><span /><span />
             </button>
@@ -133,6 +142,7 @@ export default function Navbar() {
                   className={styles.searchInput}
                   aria-label="Buscar productos"
                 />
+                <button type="button" className={styles.searchClose} onClick={() => setSearchOpen(false)} aria-label="Cerrar búsqueda">✕</button>
                 <button type="submit" className={styles.searchSubmit}>Buscar</button>
               </form>
             </motion.div>
@@ -153,14 +163,21 @@ export default function Navbar() {
               aria-hidden="true"
             />
             <motion.nav
+              id="mobile-menu"
               className={styles.mobileMenu}
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ type: 'tween', duration: 0.3 }}
+              transition={{ type: 'tween', duration: 0.28 }}
               aria-label="Menú móvil"
             >
+              {/* Logo en el menú móvil */}
+              <div className={styles.mobileLogoWrap}>
+                <Logo height={36} theme="dark" />
+              </div>
+
               <button className={styles.closeMenu} onClick={closeMenu} aria-label="Cerrar menú">✕</button>
+
               {NAV_LINKS.map(({ to, label }) => (
                 <NavLink
                   key={to}
@@ -174,6 +191,21 @@ export default function Navbar() {
                   {label}
                 </NavLink>
               ))}
+
+              {/* Búsqueda en el menú móvil */}
+              <form className={styles.mobileSearch} onSubmit={handleSearch}>
+                <input
+                  type="search"
+                  placeholder="Buscar productos..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={styles.mobileSearchInput}
+                  aria-label="Buscar productos"
+                />
+                <button type="submit" className={styles.mobileSearchBtn} aria-label="Buscar">
+                  <SearchIcon />
+                </button>
+              </form>
             </motion.nav>
           </>
         )}

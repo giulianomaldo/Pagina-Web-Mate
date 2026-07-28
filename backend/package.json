@@ -1,24 +1,47 @@
 {
-  "name": "backend",
+  "name": "encontrarte-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Backend API — Encontrarte Infusiones",
+  "main": "src/index.js",
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watchAll"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest --runInBand --forceExit",
+    "test:watch": "jest --watch"
   },
-  "keywords": [],
+  "keywords": [
+    "mate",
+    "ecommerce",
+    "express",
+    "mysql"
+  ],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "sqlite3": "^6.0.1"
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.5.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^8.6.1",
+    "express-validator": "^7.2.0",
+    "helmet": "^7.1.0",
+    "hpp": "^0.2.3",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.10.3",
+    "sequelize": "^6.37.3",
+    "xss-clean": "^0.1.4"
   },
   "devDependencies": {
-    "jest": "^30.4.2",
-    "supertest": "^7.2.2"
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testPathPattern": "tests/"
   }
 }

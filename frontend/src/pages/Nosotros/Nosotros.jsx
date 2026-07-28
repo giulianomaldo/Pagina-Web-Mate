@@ -38,7 +38,7 @@ export default function Nosotros() {
           <div className={styles.textBlock}>
             <h2 className={styles.heading}>¿Quiénes somos?</h2>
             <p>
-              La Yerbería nació en 2020 desde una idea simple: que cada persona pueda encontrar
+              Encontrarte Infusiones nació con una idea simple: que cada persona pueda encontrar
               el mate o la infusión perfecta para su ritual diario. Somos apasionados de la cultura
               del mate argentino, los blends artesanales y los accesorios de calidad.
             </p>

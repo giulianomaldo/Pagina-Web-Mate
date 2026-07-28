@@ -1,36 +1,31 @@
-# Dependencias
+# ─── Runtime ────────────────────────────
 node_modules/
+dist/
+build/
 
-# Logs
-logs
+# ─── Environment ────────────────────────
+.env
+.env.local
+.env.production
+
+# ─── Logs ───────────────────────────────
+logs/
 *.log
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
-# Variables de entorno
-.env
-.env.test
-.env.production
-.env.local
+# ─── Uploads temporales ─────────────────
+uploads/
 
-# Archivos de la base de datos SQLite
-*.sqlite
-*.sqlite3
-*.db
-*.db3
-src/db/*.sqlite
-
-# Archivos del sistema operativo y editores
+# ─── OS / Editor ────────────────────────
 .DS_Store
-.idea/
+Thumbs.db
 .vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+.idea/
 
-# Cobertura de tests
+# ─── Tests coverage ─────────────────────
 coverage/
-.nyc_output/
+
+# ─── Sequelize CLI migrations ────────────
+# Descomentar si se usa sequelize-cli
+# migrations/
+# seeders/

@@ -1,4 +1,4 @@
-# 🌿 La Yerbería — Tienda Virtual de Mates & Té Premium
+# 🌿 Encontrarte Infusiones — Tienda Virtual de Mates & Té Premium
 
 Aplicación web de e-commerce completa para una tienda de mates, bombillas, termos, yerbas y blends de té. Arquitectura **Frontend + Backend** desacoplada, lista para producción.
 
@@ -14,7 +14,10 @@ Aplicación web de e-commerce completa para una tienda de mates, bombillas, term
 | **Estado global** | Context API + useReducer |
 | **Notificaciones** | React Hot Toast |
 | **Backend** | Node.js, Express.js |
-| **Base de datos** | SQLite (sqlite3) |
+| **Base de datos** | MySQL + Sequelize ORM |
+| **Autenticación** | JWT (access + refresh token) + bcryptjs |
+| **Imágenes** | Multer + Cloudinary |
+| **Seguridad** | Helmet, CORS, express-validator |
 | **Tests Frontend** | Vitest + React Testing Library |
 | **Tests Backend** | Jest + Supertest |
 

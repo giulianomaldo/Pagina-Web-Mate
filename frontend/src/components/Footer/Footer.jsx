@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { WHATSAPP_NUMBER } from '../../utils/constants';
+import Logo from '../../assets/Logo';
 import styles from './Footer.module.css';
 
 export default function Footer() {
@@ -8,19 +9,32 @@ export default function Footer() {
   return (
     <footer className={styles.footer} role="contentinfo">
       <div className={`container ${styles.grid}`}>
-        {/* Marca */}
+
+        {/* Marca con logo oficial */}
         <div className={styles.brand}>
-          <Link to="/" className={styles.logo} aria-label="La Yerbería">
-            <span>🌿</span> La Yerbería
+          <Link to="/" className={styles.logoLink} aria-label="Encontrarte Infusiones — Volver al inicio">
+            <Logo height={40} theme="light" />
           </Link>
           <p className={styles.tagline}>
-            Mates, yerbas y blends premium para los que saben disfrutar.
+            Mates, yerbas y blends premium<br /> para los que saben disfrutar.
           </p>
           <div className={styles.social}>
-            <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className={styles.socialLink}>
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMBER}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+              className={styles.socialLink}
+            >
               <WhatsAppIcon />
             </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className={styles.socialLink}>
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className={styles.socialLink}
+            >
               <InstagramIcon />
             </a>
           </div>
@@ -49,7 +63,7 @@ export default function Footer() {
         <div className={styles.info}>
           <h4 className={styles.colTitle}>Información</h4>
           <p>📍 Buenos Aires, Argentina</p>
-          <p>📞 Consultas por WhatsApp</p>
+          <p>📦 Envíos a todo el país</p>
           <p className={styles.hours}>
             <strong>Horarios de atención</strong><br />
             Lun–Vie: 9:00 a 18:00<br />
@@ -59,7 +73,7 @@ export default function Footer() {
       </div>
 
       <div className={styles.bottom}>
-        <p>© {year} La Yerbería — Todos los derechos reservados.</p>
+        <p>© {year} Encontrarte Infusiones — Todos los derechos reservados.</p>
       </div>
     </footer>
   );

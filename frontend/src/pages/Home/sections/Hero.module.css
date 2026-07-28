@@ -1,6 +1,6 @@
 .hero {
   position: relative;
-  min-height: calc(100vh - var(--navbar-height));
+  min-height: calc(100svh - var(--navbar-height));
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -63,6 +63,16 @@
   display: flex;
   gap: var(--space-4);
   flex-wrap: wrap;
+}
+
+/* ── Responsive ───────────────────────────────── */
+@media (max-width: 640px) {
+  .content { padding-top: var(--space-10); padding-bottom: var(--space-10); }
+  .eyebrow { font-size: 0.7rem; }
+  .subtitle { font-size: var(--text-sm); }
+  .actions { flex-direction: column; }
+  .btnPrimary, .btnSecondary { text-align: center; justify-content: center; }
+  .scrollHint { display: none; }
 }
 
 .btnPrimary {
