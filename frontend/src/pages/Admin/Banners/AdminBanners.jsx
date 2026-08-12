@@ -50,7 +50,7 @@ const AdminBanners = () => {
             }
 
             if (formData.id) {
-                await adminApi.put(`/api/banners/${formData.id}`, fd, {
+                await adminApi.put(/banners/${formData.id}`, fd, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
             } else {
@@ -79,9 +79,9 @@ const AdminBanners = () => {
     const handleToggleActive = async (banner) => {
         try {
             if (banner.is_active) {
-                await adminApi.patch(`/api/banners/${banner.id}/desactivar`);
+                await adminApi.patch(/banners/${banner.id}/desactivar`);
             } else {
-                await adminApi.patch(`/api/banners/${banner.id}/activar`);
+                await adminApi.patch(/banners/${banner.id}/activar`);
             }
             fetchBanners();
         } catch (error) {
@@ -92,7 +92,7 @@ const AdminBanners = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("¿Seguro que deseas eliminar este banner?")) return;
         try {
-            await adminApi.delete(`/api/banners/${id}`);
+            await adminApi.delete(/banners/${id}`);
             fetchBanners();
         } catch (error) {
             console.error(error);
@@ -103,7 +103,7 @@ const AdminBanners = () => {
         <div className={sharedStyles.container}>
             <div className={sharedStyles.header}>
                 <h1>Banners</h1>
-                <button id="banners-new-btn" className={sharedStyles.btnPrimary} onClick={() => {
+                <button id="banners-new-btn" className={`${sharedStyles.btn} ${sharedStyles.btnPrimary}`} onClick={() => {
                     setFormData({ id: null, titulo: '', subtitulo: '', link_url: '', link_label: '', posicion: 'hero', orden: 0, fecha_inicio: '', fecha_fin: '', is_active: true });
                     setImageFile(null);
                     setModalOpen(true);
@@ -210,7 +210,7 @@ const AdminBanners = () => {
                             </div>
                             <div className={sharedStyles.modalActions}>
                                 <button type="button" onClick={() => setModalOpen(false)} className={sharedStyles.btnSecondary}>Cancelar</button>
-                                <button type="submit" className={sharedStyles.btnPrimary}>Guardar</button>
+                                <button type="submit" className={`${sharedStyles.btn} ${sharedStyles.btnPrimary}`}>Guardar</button>
                             </div>
                         </form>
                     </div>

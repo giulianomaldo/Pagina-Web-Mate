@@ -47,7 +47,7 @@ const AdminCategorias = () => {
             if (!data.parent_id) delete data.parent_id;
             
             if (formData.id) {
-                await adminApi.put(`/api/categorias/${formData.id}`, data);
+                await adminApi.put(/categorias/${formData.id}`, data);
             } else {
                 await adminApi.post('/categorias', data);
             }
@@ -66,9 +66,9 @@ const AdminCategorias = () => {
     const handleToggleActive = async (cat) => {
         try {
             if (cat.is_active) {
-                await adminApi.patch(`/api/categorias/${cat.id}/desactivar`);
+                await adminApi.patch(/categorias/${cat.id}/desactivar`);
             } else {
-                await adminApi.patch(`/api/categorias/${cat.id}/activar`);
+                await adminApi.patch(/categorias/${cat.id}/activar`);
             }
             fetchCategorias();
         } catch (error) {
@@ -79,7 +79,7 @@ const AdminCategorias = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("¿Seguro que deseas eliminar esta categoría?")) return;
         try {
-            await adminApi.delete(`/api/categorias/${id}`);
+            await adminApi.delete(/categorias/${id}`);
             fetchCategorias();
         } catch (error) {
             console.error(error);
@@ -92,7 +92,7 @@ const AdminCategorias = () => {
         <div className={sharedStyles.container}>
             <div className={sharedStyles.header}>
                 <h1>Categorías</h1>
-                <button id="categorias-new-btn" className={sharedStyles.btnPrimary} onClick={() => {
+                <button id="categorias-new-btn" className={`${sharedStyles.btn} ${sharedStyles.btnPrimary}`} onClick={() => {
                     setFormData({ id: null, nombre: '', slug: '', emoji: '', descripcion: '', orden: 0, parent_id: '', is_active: true });
                     setModalOpen(true);
                 }}>Nueva Categoría</button>
@@ -181,7 +181,7 @@ const AdminCategorias = () => {
                             </div>
                             <div className={sharedStyles.modalActions}>
                                 <button type="button" onClick={() => setModalOpen(false)} className={sharedStyles.btnSecondary}>Cancelar</button>
-                                <button type="submit" className={sharedStyles.btnPrimary}>Guardar</button>
+                                <button type="submit" className={`${sharedStyles.btn} ${sharedStyles.btnPrimary}`}>Guardar</button>
                             </div>
                         </form>
                     </div>

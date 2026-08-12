@@ -10,10 +10,7 @@ const dbStorage = db.storage || path.join(__dirname, '..', '..', 'database.sqlit
 const sequelize = new Sequelize({
   dialect:  'sqlite',
   storage:  dbStorage,
-
-  logging: server.isDev
-    ? (sql) => console.log(`\n📦  [Sequelize] ${sql}\n`)
-    : false,
+  logging:  false, // silencioso — el alter:true generaba miles de líneas de log
 
   define: {
     underscored:     true,
@@ -24,17 +21,17 @@ const sequelize = new Sequelize({
 
 /**
  * Prueba la conexión y sincroniza los modelos.
- * alter: true actualiza la estructura sin destruir datos (dev).
- * En producción usar migraciones con sequelize-cli.
+ * force: false  → crea tablas si no existen, sin tocar las que ya tienen datos.
+ * SQLite no soporta ALTER TABLE real (Sequelize lo simula con backup tables
+ * lo que rompe con datos existentes y foreign keys).
  */
 async function connectDB() {
   await sequelize.authenticate();
-  console.log('✅  MySQL conectado.');
+  console.log('✅  Base de datos SQLite conectada.');
 
-  if (server.isDev) {
-    await sequelize.sync({ alter: true });
-    console.log('🔄  Modelos sincronizados (alter).');
-  }
+  await sequelize.sync({ force: false });
+  console.log('🔄  Modelos sincronizados.');
 }
 
 module.exports = { sequelize, connectDB };
+
