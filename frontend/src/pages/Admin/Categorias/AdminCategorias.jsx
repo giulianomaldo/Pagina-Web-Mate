@@ -154,7 +154,7 @@ const AdminCategorias = () => {
                     <button className={sharedStyles.drawerClose} onClick={() => setModalOpen(false)}>×</button>
                 </div>
                 <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
-                    <div className={sharedStyles.drawerBody} style={{ padding: '1.5rem', overflowY: 'auto' }}>
+                    <div className={sharedStyles.drawerBody} style={{ padding: '1.5rem', overflowY: 'auto', flexDirection: 'column', gap: '1.5rem' }}>
                         <div className={sharedStyles.formGrid2}>
                             <div className={sharedStyles.formGroup}>
                                 <label className={sharedStyles.labelRequired}>Nombre</label>
@@ -166,11 +166,11 @@ const AdminCategorias = () => {
                             </div>
                         </div>
 
-                        <div className={sharedStyles.formGrid2} style={{ marginTop: '1rem', alignItems: 'end' }}>
+                        <div className={sharedStyles.formGrid2} style={{ alignItems: 'end' }}>
                             <div className={sharedStyles.formGroup}>
-                                <label className={sharedStyles.label}>Categoría Padre</label>
+                                <label className={sharedStyles.label}>Es subcategoría de (Opcional)</label>
                                 <select name="parent_id" value={formData.parent_id} onChange={handleFormChange} className={sharedStyles.select}>
-                                    <option value="">Ninguna</option>
+                                    <option value="">Ninguna (Es una categoría principal)</option>
                                     {categorias.filter(c => c.id !== formData.id).map(c => (
                                         <option key={c.id} value={c.id}>{c.nombre}</option>
                                     ))}
@@ -186,7 +186,7 @@ const AdminCategorias = () => {
                             </div>
                         </div>
 
-                        <div className={sharedStyles.formGroupFull} style={{ marginTop: '1rem' }}>
+                        <div className={sharedStyles.formGroupFull}>
                             <label className={sharedStyles.label}>Descripción</label>
                             <textarea name="descripcion" value={formData.descripcion} onChange={handleFormChange} className={sharedStyles.textarea} style={{ minHeight: '100px' }}></textarea>
                         </div>
