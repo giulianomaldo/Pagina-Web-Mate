@@ -8,6 +8,7 @@
     "dev": "nodemon src/index.js",
     "seed:admin": "node scripts/seed-admin.js",
     "setup:bucket": "node scripts/setup-bucket.js",
+    "seed:data": "node scripts/seed-data.js",
     "test": "jest --runInBand --forceExit",
     "test:watch": "jest --watch"
   },

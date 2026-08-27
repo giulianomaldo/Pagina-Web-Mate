@@ -29,14 +29,13 @@ const sequelize = db.url
 
 /**
  * Prueba la conexión y sincroniza los modelos.
- * alter: true actualiza la estructura sin destruir datos (dev).
- * En producción usar migraciones con sequelize-cli.
+ * force: false  → crea tablas si no existen, sin tocar las que ya tienen datos.
+ * SQLite no soporta ALTER TABLE real (Sequelize lo simula con backup tables
+ * lo que rompe con datos existentes y foreign keys).
  */
 async function connectDB() {
   await sequelize.authenticate();
-  console.log('✅  Base de datos (PostgreSQL/SQLite) conectada.');
-
-  if (server.isDev) {
+  console.log('✅  Base de datos (PostgreSQL/SQLite) conectada.');  if (server.isDev) {
     await sequelize.sync({ force: false, alter: { drop: false } });
     console.log('🔄  Modelos sincronizados (alter).');
   }
