@@ -161,38 +161,34 @@ const AdminCategorias = () => {
                                 <input type="text" name="nombre" value={formData.nombre} onChange={handleFormChange} required className={sharedStyles.input} />
                             </div>
                             <div className={sharedStyles.formGroup}>
-                                <label className={sharedStyles.label}>Slug</label>
-                                <input type="text" name="slug" value={formData.slug} onChange={handleFormChange} className={sharedStyles.input} />
-                            </div>
-                            <div className={sharedStyles.formGroup}>
-                                <label className={sharedStyles.label}>Emoji</label>
-                                <input type="text" name="emoji" value={formData.emoji} onChange={handleFormChange} className={sharedStyles.input} />
-                            </div>
-                            <div className={sharedStyles.formGroup}>
                                 <label className={sharedStyles.label}>Orden</label>
                                 <input type="number" name="orden" value={formData.orden} onChange={handleFormChange} className={sharedStyles.input} />
                             </div>
                         </div>
+
+                        <div className={sharedStyles.formGrid2} style={{ marginTop: '1rem', alignItems: 'end' }}>
+                            <div className={sharedStyles.formGroup}>
+                                <label className={sharedStyles.label}>Categoría Padre</label>
+                                <select name="parent_id" value={formData.parent_id} onChange={handleFormChange} className={sharedStyles.select}>
+                                    <option value="">Ninguna</option>
+                                    {categorias.filter(c => c.id !== formData.id).map(c => (
+                                        <option key={c.id} value={c.id}>{c.nombre}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className={sharedStyles.formGroup}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', padding: '0.55rem 1rem', background: formData.is_active ? '#f0fdf4' : '#fff', border: `1.5px solid ${formData.is_active ? '#2e3b23' : '#e2e6dc'}`, borderRadius: '8px', height: '100%' }}>
+                                    <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleFormChange} style={{ width: '18px', height: '18px', accentColor: '#2e3b23' }} />
+                                    <span style={{ fontWeight: 600, fontSize: '.9rem', color: formData.is_active ? '#1a2210' : '#7a8a70' }}>
+                                        {formData.is_active ? '🟢 Categoría Activa' : '⚪ Categoría Inactiva'}
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
                         <div className={sharedStyles.formGroupFull} style={{ marginTop: '1rem' }}>
                             <label className={sharedStyles.label}>Descripción</label>
-                            <textarea name="descripcion" value={formData.descripcion} onChange={handleFormChange} className={sharedStyles.textarea}></textarea>
-                        </div>
-                        <div className={sharedStyles.formGroupFull} style={{ marginTop: '1rem' }}>
-                            <label className={sharedStyles.label}>Categoría Padre</label>
-                            <select name="parent_id" value={formData.parent_id} onChange={handleFormChange} className={sharedStyles.select}>
-                                <option value="">Ninguna</option>
-                                {categorias.filter(c => c.id !== formData.id).map(c => (
-                                    <option key={c.id} value={c.id}>{c.nombre}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div style={{ marginTop: '1.5rem' }}>
-                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', padding: '1rem', background: formData.is_active ? '#f0fdf4' : '#fff', border: `1.5px solid ${formData.is_active ? '#2e3b23' : '#e8e8e8'}`, borderRadius: '8px' }}>
-                                <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleFormChange} style={{ width: '18px', height: '18px', accentColor: '#2e3b23' }} />
-                                <div>
-                                    <div style={{ fontWeight: 600, fontSize: '.9rem' }}>🟢 Categoría Activa</div>
-                                </div>
-                            </label>
+                            <textarea name="descripcion" value={formData.descripcion} onChange={handleFormChange} className={sharedStyles.textarea} style={{ minHeight: '100px' }}></textarea>
                         </div>
                     </div>
                     <div className={sharedStyles.drawerFooter}>
