@@ -15,9 +15,9 @@ const ProductCard = memo(function ProductCard({ producto }) {
     e.preventDefault();
     e.stopPropagation();
     if (producto.stock <= 0) return;
-    addItem(producto);
+    addItem({ ...producto, imagen: producto.imagen_url || producto.imagen });
     toast.success(`${producto.nombre} agregado al carrito`, {
-      icon: emojiPorCategoria(producto.categoria),
+      icon: producto.categoria?.emoji || emojiPorCategoria(producto.categoria),
       duration: 2000,
     });
   };
@@ -29,16 +29,16 @@ const ProductCard = memo(function ProductCard({ producto }) {
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       layout
     >
-      <Link to={`/producto/${producto.id}`} className={styles.imageWrapper} aria-label={`Ver detalle de ${producto.nombre}`}>
+      <Link to={`/producto/${producto.slug || producto.id}`} className={styles.imageWrapper} aria-label={`Ver detalle de ${producto.nombre}`}>
         {/* Badges */}
         <div className={styles.badges}>
-          {producto.nuevo       && <Badge variant="nuevo">Nuevo</Badge>}
-          {producto.masVendido  && <Badge variant="masVendido">⭐ Top</Badge>}
+          {(producto.nuevo || producto.is_nuevo) && <Badge variant="nuevo">Nuevo</Badge>}
+          {(producto.masVendido || producto.is_mas_vendido) && <Badge variant="masVendido">⭐ Top</Badge>}
           {producto.stock === 0 && <Badge variant="sinStock">Sin stock</Badge>}
         </div>
 
         <img
-          src={producto.imagen}
+          src={producto.imagen_url || producto.imagen}
           alt={producto.nombre}
           className={styles.image}
           loading="lazy"
@@ -47,12 +47,12 @@ const ProductCard = memo(function ProductCard({ producto }) {
 
       <div className={styles.body}>
         <p className={styles.categoria}>
-          {emojiPorCategoria(producto.categoria)} {producto.categoria}
+          {producto.categoria?.emoji || emojiPorCategoria(producto.categoria)} {typeof producto.categoria === 'object' ? producto.categoria.nombre : producto.categoria}
         </p>
-        <Link to={`/producto/${producto.id}`}>
+        <Link to={`/producto/${producto.slug || producto.id}`}>
           <h3 className={styles.nombre}>{producto.nombre}</h3>
         </Link>
-        <p className={styles.marca}>{producto.marca}</p>
+        <p className={styles.marca}>{typeof producto.marca === 'object' ? producto.marca.nombre : producto.marca}</p>
 
         <div className={styles.footer}>
           <span className={styles.precio}>{formatCurrency(producto.precio)}</span>
