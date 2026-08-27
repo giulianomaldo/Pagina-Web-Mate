@@ -50,7 +50,7 @@ const AdminBanners = () => {
             }
 
             if (formData.id) {
-                await adminApi.put(/banners/${formData.id}`, fd, {
+                await adminApi.put(`/banners/${formData.id}`, fd, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
             } else {
@@ -79,9 +79,9 @@ const AdminBanners = () => {
     const handleToggleActive = async (banner) => {
         try {
             if (banner.is_active) {
-                await adminApi.patch(/banners/${banner.id}/desactivar`);
+                await adminApi.patch(`/banners/${banner.id}/desactivar`);
             } else {
-                await adminApi.patch(/banners/${banner.id}/activar`);
+                await adminApi.patch(`/banners/${banner.id}/activar`);
             }
             fetchBanners();
         } catch (error) {
@@ -92,7 +92,7 @@ const AdminBanners = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("¿Seguro que deseas eliminar este banner?")) return;
         try {
-            await adminApi.delete(/banners/${id}`);
+            await adminApi.delete(`/banners/${id}`);
             fetchBanners();
         } catch (error) {
             console.error(error);

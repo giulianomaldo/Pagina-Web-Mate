@@ -35,7 +35,7 @@ const AdminProveedores = () => {
         e.preventDefault();
         try {
             if (formData.id) {
-                await adminApi.put(/proveedores/${formData.id}`, formData);
+                await adminApi.put(`/proveedores/${formData.id}`, formData);
             } else {
                 await adminApi.post('/proveedores', formData);
             }
@@ -54,15 +54,15 @@ const AdminProveedores = () => {
     const handleToggleActive = async (prov) => {
         try {
             if (prov.is_active) {
-                await adminApi.patch(/proveedores/${prov.id}/desactivar`); // Or put with changed is_active
+                await adminApi.patch(`/proveedores/${prov.id}/desactivar`); // Or put with changed is_active
             } else {
-                await adminApi.patch(/proveedores/${prov.id}/activar`);
+                await adminApi.patch(`/proveedores/${prov.id}/activar`);
             }
             fetchProveedores();
         } catch (error) {
             // fallback if patch active/deactive doesn't exist for proveedores
             try {
-                await adminApi.put(/proveedores/${prov.id}`, { ...prov, is_active: !prov.is_active });
+                await adminApi.put(`/proveedores/${prov.id}`, { ...prov, is_active: !prov.is_active });
                 fetchProveedores();
             } catch(e) { console.error(e); }
         }
@@ -71,7 +71,7 @@ const AdminProveedores = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("¿Seguro que deseas eliminar este proveedor?")) return;
         try {
-            await adminApi.delete(/proveedores/${id}`);
+            await adminApi.delete(`/proveedores/${id}`);
             fetchProveedores();
         } catch (error) {
             console.error(error);

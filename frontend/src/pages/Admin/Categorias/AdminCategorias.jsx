@@ -47,7 +47,7 @@ const AdminCategorias = () => {
             if (!data.parent_id) delete data.parent_id;
             
             if (formData.id) {
-                await adminApi.put(/categorias/${formData.id}`, data);
+                await adminApi.put(`/categorias/${formData.id}`, data);
             } else {
                 await adminApi.post('/categorias', data);
             }
@@ -66,9 +66,9 @@ const AdminCategorias = () => {
     const handleToggleActive = async (cat) => {
         try {
             if (cat.is_active) {
-                await adminApi.patch(/categorias/${cat.id}/desactivar`);
+                await adminApi.patch(`/categorias/${cat.id}/desactivar`);
             } else {
-                await adminApi.patch(/categorias/${cat.id}/activar`);
+                await adminApi.patch(`/categorias/${cat.id}/activar`);
             }
             fetchCategorias();
         } catch (error) {
@@ -79,7 +79,7 @@ const AdminCategorias = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("¿Seguro que deseas eliminar esta categoría?")) return;
         try {
-            await adminApi.delete(/categorias/${id}`);
+            await adminApi.delete(`/categorias/${id}`);
             fetchCategorias();
         } catch (error) {
             console.error(error);

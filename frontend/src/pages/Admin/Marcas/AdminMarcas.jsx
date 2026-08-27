@@ -41,7 +41,7 @@ const AdminMarcas = () => {
         e.preventDefault();
         try {
             if (formData.id) {
-                await adminApi.put(/marcas/${formData.id}`, formData);
+                await adminApi.put(`/marcas/${formData.id}`, formData);
             } else {
                 await adminApi.post('/marcas', formData);
             }
@@ -60,9 +60,9 @@ const AdminMarcas = () => {
     const handleToggleActive = async (marca) => {
         try {
             if (marca.is_active) {
-                await adminApi.patch(/marcas/${marca.id}/desactivar`);
+                await adminApi.patch(`/marcas/${marca.id}/desactivar`);
             } else {
-                await adminApi.patch(/marcas/${marca.id}/activar`);
+                await adminApi.patch(`/marcas/${marca.id}/activar`);
             }
             fetchMarcas();
         } catch (error) {
@@ -73,7 +73,7 @@ const AdminMarcas = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("¿Seguro que deseas eliminar esta marca?")) return;
         try {
-            await adminApi.delete(/marcas/${id}`);
+            await adminApi.delete(`/marcas/${id}`);
             fetchMarcas();
         } catch (error) {
             console.error(error);
