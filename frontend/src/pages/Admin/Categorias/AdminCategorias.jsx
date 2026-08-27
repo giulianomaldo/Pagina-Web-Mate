@@ -139,54 +139,63 @@ const AdminCategorias = () => {
                 </tbody>
             </table>
 
-            {modalOpen && (
-                <div className={sharedStyles.modalOverlay}>
-                    <div className={sharedStyles.modal}>
-                        <h2>{formData.id ? 'Editar Categoría' : 'Nueva Categoría'}</h2>
-                        <form onSubmit={handleSave}>
-                            <div className={sharedStyles.formGroup}>
-                                <label>Nombre</label>
-                                <input type="text" name="nombre" value={formData.nombre} onChange={handleFormChange} required />
-                            </div>
-                            <div className={sharedStyles.formGroup}>
-                                <label>Slug</label>
-                                <input type="text" name="slug" value={formData.slug} onChange={handleFormChange} />
-                            </div>
-                            <div className={sharedStyles.formGroup}>
-                                <label>Emoji</label>
-                                <input type="text" name="emoji" value={formData.emoji} onChange={handleFormChange} />
-                            </div>
-                            <div className={sharedStyles.formGroup}>
-                                <label>Descripción</label>
-                                <textarea name="descripcion" value={formData.descripcion} onChange={handleFormChange}></textarea>
-                            </div>
-                            <div className={sharedStyles.formGroup}>
-                                <label>Orden</label>
-                                <input type="number" name="orden" value={formData.orden} onChange={handleFormChange} />
-                            </div>
-                            <div className={sharedStyles.formGroup}>
-                                <label>Categoría Padre</label>
-                                <select name="parent_id" value={formData.parent_id} onChange={handleFormChange}>
-                                    <option value="">Ninguna</option>
-                                    {categorias.filter(c => c.id !== formData.id).map(c => (
-                                        <option key={c.id} value={c.id}>{c.nombre}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className={sharedStyles.formGroupCheckbox}>
-                                <label>
-                                    <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleFormChange} />
-                                    Activo
-                                </label>
-                            </div>
-                            <div className={sharedStyles.modalActions}>
-                                <button type="button" onClick={() => setModalOpen(false)} className={sharedStyles.btnSecondary}>Cancelar</button>
-                                <button type="submit" className={`${sharedStyles.btn} ${sharedStyles.btnPrimary}`}>Guardar</button>
-                            </div>
-                        </form>
+            {modalOpen && <div className={sharedStyles.drawerBackdrop} onClick={() => setModalOpen(false)} />}
+            <div className={`${sharedStyles.drawer} ${modalOpen ? sharedStyles.drawerOpen : ''}`}>
+                <div className={sharedStyles.drawerHeader}>
+                    <div className={sharedStyles.drawerTitle}>
+                        {formData.id ? '✏️ Editar Categoría' : '➕ Nueva Categoría'}
+                        {formData.id && <span className={sharedStyles.drawerProductName}>— {formData.nombre}</span>}
                     </div>
+                    <button className={sharedStyles.drawerClose} onClick={() => setModalOpen(false)}>×</button>
                 </div>
-            )}
+                <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+                    <div className={sharedStyles.drawerBody} style={{ padding: '1.5rem', overflowY: 'auto' }}>
+                        <div className={sharedStyles.formGrid2}>
+                            <div className={sharedStyles.formGroup}>
+                                <label className={sharedStyles.labelRequired}>Nombre</label>
+                                <input type="text" name="nombre" value={formData.nombre} onChange={handleFormChange} required className={sharedStyles.input} />
+                            </div>
+                            <div className={sharedStyles.formGroup}>
+                                <label className={sharedStyles.label}>Slug</label>
+                                <input type="text" name="slug" value={formData.slug} onChange={handleFormChange} className={sharedStyles.input} />
+                            </div>
+                            <div className={sharedStyles.formGroup}>
+                                <label className={sharedStyles.label}>Emoji</label>
+                                <input type="text" name="emoji" value={formData.emoji} onChange={handleFormChange} className={sharedStyles.input} />
+                            </div>
+                            <div className={sharedStyles.formGroup}>
+                                <label className={sharedStyles.label}>Orden</label>
+                                <input type="number" name="orden" value={formData.orden} onChange={handleFormChange} className={sharedStyles.input} />
+                            </div>
+                        </div>
+                        <div className={sharedStyles.formGroupFull} style={{ marginTop: '1rem' }}>
+                            <label className={sharedStyles.label}>Descripción</label>
+                            <textarea name="descripcion" value={formData.descripcion} onChange={handleFormChange} className={sharedStyles.textarea}></textarea>
+                        </div>
+                        <div className={sharedStyles.formGroupFull} style={{ marginTop: '1rem' }}>
+                            <label className={sharedStyles.label}>Categoría Padre</label>
+                            <select name="parent_id" value={formData.parent_id} onChange={handleFormChange} className={sharedStyles.select}>
+                                <option value="">Ninguna</option>
+                                {categorias.filter(c => c.id !== formData.id).map(c => (
+                                    <option key={c.id} value={c.id}>{c.nombre}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div style={{ marginTop: '1.5rem' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', padding: '1rem', background: formData.is_active ? '#f0fdf4' : '#fff', border: `1.5px solid ${formData.is_active ? '#2e3b23' : '#e8e8e8'}`, borderRadius: '8px' }}>
+                                <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleFormChange} style={{ width: '18px', height: '18px', accentColor: '#2e3b23' }} />
+                                <div>
+                                    <div style={{ fontWeight: 600, fontSize: '.9rem' }}>🟢 Categoría Activa</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div className={sharedStyles.drawerFooter}>
+                        <button type="button" onClick={() => setModalOpen(false)} className={`${sharedStyles.btn} ${sharedStyles.btnGhost}`}>Cancelar</button>
+                        <button type="submit" className={`${sharedStyles.btn} ${sharedStyles.btnPrimary}`}>{formData.id ? '✅ Guardar Cambios' : '✅ Crear Categoría'}</button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };
