@@ -112,7 +112,7 @@ const AdminPromociones = () => {
       };
 
       if (editingPromo) {
-        await adminApi.put(`/api/promociones/${editingPromo.id}`, payload);
+        await adminApi.put(`/promociones/${editingPromo.id}`, payload);
       } else {
         await adminApi.post('/promociones', payload);
       }
@@ -126,7 +126,7 @@ const AdminPromociones = () => {
   const handleDelete = async (id) => {
     if (window.confirm('¿Eliminar promoción?')) {
       try {
-        await adminApi.delete(`/api/promociones/${id}`);
+        await adminApi.delete(`/promociones/${id}`);
         fetchData();
       } catch (err) {
         alert('Error al eliminar');
@@ -137,9 +137,9 @@ const AdminPromociones = () => {
   const handleToggleActive = async (id, isActive) => {
     try {
       if (isActive) {
-        await adminApi.patch(`/api/promociones/${id}/desactivar`);
+        await adminApi.patch(`/promociones/${id}/desactivar`);
       } else {
-        await adminApi.patch(`/api/promociones/${id}/activar`);
+        await adminApi.patch(`/promociones/${id}/activar`);
       }
       fetchData();
     } catch (err) {
@@ -151,7 +151,7 @@ const AdminPromociones = () => {
     <div className={sharedStyles.container}>
       <header className={sharedStyles.header}>
         <h1>Promociones</h1>
-        <button id="promociones-new-btn" onClick={() => handleOpenModal()} className={sharedStyles.primaryBtn}>Nueva Promoción</button>
+        <button id="promociones-new-btn" onClick={() => handleOpenModal()} className={`${sharedStyles.btn} ${sharedStyles.btnPrimary}`}>Nueva Promoción</button>
       </header>
 
       {error && <div className={sharedStyles.error}>{error}</div>}
@@ -195,8 +195,8 @@ const AdminPromociones = () => {
                     </label>
                   </td>
                   <td className={sharedStyles.actions}>
-                    <button onClick={() => handleOpenModal(promo)} className={sharedStyles.editBtn}>Editar</button>
-                    <button onClick={() => handleDelete(promo.id)} className={sharedStyles.deleteBtn}>Eliminar</button>
+                    <button onClick={() => handleOpenModal(promo)} className={sharedStyles.actionBtnEdit}>✏️ Editar</button>
+                    <button onClick={() => handleDelete(promo.id)} className={sharedStyles.actionBtnDelete}>🗑️ Eliminar</button>
                   </td>
                 </tr>
               ))}
@@ -205,105 +205,97 @@ const AdminPromociones = () => {
         </div>
       )}
 
-      {showModal && (
-        <div className={sharedStyles.modalOverlay}>
-          <div className={sharedStyles.modal}>
-            <h2>{editingPromo ? 'Editar Promoción' : 'Nueva Promoción'}</h2>
-            <form onSubmit={handleSubmit} className={styles.form}>
-              <label>
-                Nombre:
-                <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} required />
-              </label>
-              <label>
-                Descripción:
-                <textarea name="descripcion" value={formData.descripcion} onChange={handleChange} />
-              </label>
-              
-              <div className={styles.radioGroup}>
-                <span>Tipo de descuento:</span>
-                <label>
-                  <input type="radio" name="tipo_descuento" value="porcentaje" checked={formData.tipo_descuento === 'porcentaje'} onChange={handleChange} />
-                  Porcentaje
-                </label>
-                <label>
-                  <input type="radio" name="tipo_descuento" value="monto_fijo" checked={formData.tipo_descuento === 'monto_fijo'} onChange={handleChange} />
-                  Monto Fijo
-                </label>
-              </div>
-
-              <div className={styles.rowGroup}>
-                <label>
-                  Valor Descuento:
-                  <input type="number" name="valor_descuento" value={formData.valor_descuento} onChange={handleChange} required step="0.01" />
-                </label>
-                <label>
-                  Compra Mínima:
-                  <input type="number" name="compra_minima" value={formData.compra_minima} onChange={handleChange} step="0.01" />
-                </label>
-              </div>
-
-              <label>
-                Usos Máximos (dejar vacío o 0 para ilimitado):
-                <input type="number" name="usos_maximos" value={formData.usos_maximos} onChange={handleChange} />
-              </label>
-
-              <label>
-                Aplica a:
-                <select name="aplica_a" value={formData.aplica_a} onChange={handleChange}>
-                  <option value="todos">Todos</option>
-                  <option value="categoria">Por Categoría</option>
-                  <option value="producto">Por Producto</option>
-                </select>
-              </label>
-
-              {formData.aplica_a === 'categoria' && (
-                <label>
-                  Categoría:
-                  <select name="categoria_id" value={formData.categoria_id} onChange={handleChange} required>
-                    <option value="">Seleccionar categoría...</option>
-                    {categorias.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
-                  </select>
-                </label>
-              )}
-
-              {formData.aplica_a === 'producto' && (
-                <div className={styles.multiSelect}>
-                  <span>Seleccionar Productos:</span>
-                  <div className={styles.checkboxList}>
-                    {productos.map(p => (
-                      <label key={p.id}>
-                        <input type="checkbox" checked={formData.productos_ids.includes(p.id)} onChange={() => handleProductCheckbox(p.id)} />
-                        {p.nombre}
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div className={styles.rowGroup}>
-                <label>
-                  Fecha Inicio:
-                  <input type="date" name="fecha_inicio" value={formData.fecha_inicio} onChange={handleChange} />
-                </label>
-                <label>
-                  Fecha Fin:
-                  <input type="date" name="fecha_fin" value={formData.fecha_fin} onChange={handleChange} />
-                </label>
-              </div>
-
-              <label className={styles.checkboxLabel}>
-                <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleChange} />
-                Promoción Activa
-              </label>
-
-              <div className={sharedStyles.modalActions}>
-                <button type="button" onClick={() => setShowModal(false)} className={sharedStyles.cancelBtn}>Cancelar</button>
-                <button type="submit" className={sharedStyles.saveBtn}>Guardar</button>
-              </div>
-            </form>
-          </div>
+      {showModal && <div className={sharedStyles.drawerBackdrop} onClick={() => setShowModal(false)} />}
+      <div className={`${sharedStyles.drawer} ${showModal ? sharedStyles.drawerOpen : ''}`}>
+        <div className={sharedStyles.drawerHeader}>
+            <div className={sharedStyles.drawerTitle}>
+                {editingPromo ? '✏️ Editar Promoción' : '➕ Nueva Promoción'}
+                {editingPromo && <span className={sharedStyles.drawerProductName}>— {formData.nombre}</span>}
+            </div>
+            <button type="button" className={sharedStyles.drawerClose} onClick={() => setShowModal(false)}>×</button>
         </div>
-      )}
+        
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+            <div className={sharedStyles.drawerBody} style={{ padding: '1.5rem', overflowY: 'auto' }}>
+              
+              <div className={sharedStyles.formGrid2}>
+                  <div className={sharedStyles.formGroup}>
+                    <label className={sharedStyles.labelRequired}>Nombre</label>
+                    <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} required className={sharedStyles.input} />
+                  </div>
+                  <div className={sharedStyles.formGroup}>
+                    <label className={sharedStyles.label}>Aplica a</label>
+                    <select name="aplica_a" value={formData.aplica_a} onChange={handleChange} className={sharedStyles.select}>
+                      <option value="todos">Todos los productos</option>
+                      <option value="categoria">Categoría específica</option>
+                      <option value="marca">Marca específica</option>
+                      <option value="producto">Producto específico</option>
+                    </select>
+                  </div>
+              </div>
+
+              <div className={sharedStyles.formGroupFull} style={{ marginTop: '1rem' }}>
+                <label className={sharedStyles.label}>Descripción</label>
+                <textarea name="descripcion" value={formData.descripcion} onChange={handleChange} className={sharedStyles.textarea} />
+              </div>
+              
+              <div style={{ marginTop: '1rem' }}>
+                <span className={sharedStyles.label}>Tipo de descuento:</span>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <input type="radio" name="tipo_descuento" value="porcentaje" checked={formData.tipo_descuento === 'porcentaje'} onChange={handleChange} />
+                    Porcentaje
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <input type="radio" name="tipo_descuento" value="monto_fijo" checked={formData.tipo_descuento === 'monto_fijo'} onChange={handleChange} />
+                    Monto Fijo
+                    </label>
+                </div>
+              </div>
+
+              <div className={sharedStyles.formGrid2} style={{ marginTop: '1.5rem' }}>
+                <div className={sharedStyles.formGroup}>
+                  <label className={sharedStyles.labelRequired}>Valor Descuento</label>
+                  <input type="number" name="valor_descuento" value={formData.valor_descuento} onChange={handleChange} required step="0.01" className={sharedStyles.input} />
+                </div>
+                <div className={sharedStyles.formGroup}>
+                  <label className={sharedStyles.label}>Compra Mínima</label>
+                  <input type="number" name="compra_minima" value={formData.compra_minima} onChange={handleChange} step="0.01" className={sharedStyles.input} />
+                </div>
+                <div className={sharedStyles.formGroup}>
+                  <label className={sharedStyles.label}>Tope de Descuento</label>
+                  <input type="number" name="tope_descuento" value={formData.tope_descuento} onChange={handleChange} step="0.01" className={sharedStyles.input} />
+                </div>
+                <div className={sharedStyles.formGroup}>
+                  <label className={sharedStyles.label}>Usos Máximos</label>
+                  <input type="number" name="usos_maximos" value={formData.usos_maximos} onChange={handleChange} className={sharedStyles.input} />
+                </div>
+                <div className={sharedStyles.formGroup}>
+                  <label className={sharedStyles.label}>Fecha Inicio</label>
+                  <input type="date" name="fecha_inicio" value={formData.fecha_inicio} onChange={handleChange} className={sharedStyles.input} />
+                </div>
+                <div className={sharedStyles.formGroup}>
+                  <label className={sharedStyles.label}>Fecha Fin</label>
+                  <input type="date" name="fecha_fin" value={formData.fecha_fin} onChange={handleChange} className={sharedStyles.input} />
+                </div>
+              </div>
+
+              <div style={{ marginTop: '1.5rem' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', padding: '1rem', background: formData.is_active ? '#f0fdf4' : '#fff', border: `1.5px solid ${formData.is_active ? '#2e3b23' : '#e8e8e8'}`, borderRadius: '8px' }}>
+                      <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleChange} style={{ width: '18px', height: '18px', accentColor: '#2e3b23' }} />
+                      <div>
+                          <div style={{ fontWeight: 600, fontSize: '.9rem' }}>🟢 Promoción Activa</div>
+                      </div>
+                  </label>
+              </div>
+
+            </div>
+            <div className={sharedStyles.drawerFooter}>
+              <button type="button" onClick={() => setShowModal(false)} className={`${sharedStyles.btn} ${sharedStyles.btnGhost}`}>Cancelar</button>
+              <button type="submit" className={`${sharedStyles.btn} ${sharedStyles.btnPrimary}`}>{editingPromo ? '✅ Guardar Cambios' : '✅ Crear Promoción'}</button>
+            </div>
+        </form>
+      </div>
     </div>
   );
 };

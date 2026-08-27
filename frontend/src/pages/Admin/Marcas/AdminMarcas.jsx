@@ -41,7 +41,7 @@ const AdminMarcas = () => {
         e.preventDefault();
         try {
             if (formData.id) {
-                await adminApi.put(`/api/marcas/${formData.id}`, formData);
+                await adminApi.put(`/marcas/${formData.id}`, formData);
             } else {
                 await adminApi.post('/marcas', formData);
             }
@@ -60,9 +60,9 @@ const AdminMarcas = () => {
     const handleToggleActive = async (marca) => {
         try {
             if (marca.is_active) {
-                await adminApi.patch(`/api/marcas/${marca.id}/desactivar`);
+                await adminApi.patch(`/marcas/${marca.id}/desactivar`);
             } else {
-                await adminApi.patch(`/api/marcas/${marca.id}/activar`);
+                await adminApi.patch(`/marcas/${marca.id}/activar`);
             }
             fetchMarcas();
         } catch (error) {
@@ -73,7 +73,7 @@ const AdminMarcas = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("¿Seguro que deseas eliminar esta marca?")) return;
         try {
-            await adminApi.delete(`/api/marcas/${id}`);
+            await adminApi.delete(`/marcas/${id}`);
             fetchMarcas();
         } catch (error) {
             console.error(error);
@@ -84,7 +84,7 @@ const AdminMarcas = () => {
         <div className={sharedStyles.container}>
             <div className={sharedStyles.header}>
                 <h1>Marcas</h1>
-                <button id="marcas-new-btn" className={sharedStyles.btnPrimary} onClick={() => {
+                <button id="marcas-new-btn" className={`${sharedStyles.btn} ${sharedStyles.btnPrimary}`} onClick={() => {
                     setFormData({ id: null, nombre: '', slug: '', descripcion: '', imagen_url: '', is_active: true });
                     setModalOpen(true);
                 }}>Nueva Marca</button>
@@ -112,12 +112,12 @@ const AdminMarcas = () => {
                                 </span>
                             </td>
                             <td>
-                                <button className={sharedStyles.btnAction} onClick={() => handleEdit(marca)}>Editar</button>
+                                <button className={sharedStyles.actionBtnEdit} onClick={() => handleEdit(marca)}>✏️ Editar</button>
                                 <button className={sharedStyles.btnAction} onClick={() => handleToggleActive(marca)}>
                                     {marca.is_active ? 'Desactivar' : 'Activar'}
                                 </button>
                                 {admin?.is_superadmin && (
-                                    <button className={sharedStyles.btnActionDelete} onClick={() => handleDelete(marca.id)}>Eliminar</button>
+                                    <button className={sharedStyles.actionBtnDelete} onClick={() => handleDelete(marca.id)}>🗑️ Eliminar</button>
                                 )}
                             </td>
                         </tr>
@@ -125,41 +125,50 @@ const AdminMarcas = () => {
                 </tbody>
             </table>
 
-            {modalOpen && (
-                <div className={sharedStyles.modalOverlay}>
-                    <div className={sharedStyles.modal}>
-                        <h2>{formData.id ? 'Editar Marca' : 'Nueva Marca'}</h2>
-                        <form onSubmit={handleSave}>
-                            <div className={sharedStyles.formGroup}>
-                                <label>Nombre</label>
-                                <input type="text" name="nombre" value={formData.nombre} onChange={handleFormChange} required />
-                            </div>
-                            <div className={sharedStyles.formGroup}>
-                                <label>Slug</label>
-                                <input type="text" name="slug" value={formData.slug} onChange={handleFormChange} />
-                            </div>
-                            <div className={sharedStyles.formGroup}>
-                                <label>Descripción</label>
-                                <textarea name="descripcion" value={formData.descripcion} onChange={handleFormChange}></textarea>
-                            </div>
-                            <div className={sharedStyles.formGroup}>
-                                <label>Imagen URL</label>
-                                <input type="text" name="imagen_url" value={formData.imagen_url} onChange={handleFormChange} />
-                            </div>
-                            <div className={sharedStyles.formGroupCheckbox}>
-                                <label>
-                                    <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleFormChange} />
-                                    Activo
-                                </label>
-                            </div>
-                            <div className={sharedStyles.modalActions}>
-                                <button type="button" onClick={() => setModalOpen(false)} className={sharedStyles.btnSecondary}>Cancelar</button>
-                                <button type="submit" className={sharedStyles.btnPrimary}>Guardar</button>
-                            </div>
-                        </form>
+            {modalOpen && <div className={sharedStyles.drawerBackdrop} onClick={() => setModalOpen(false)} />}
+            <div className={`${sharedStyles.drawer} ${modalOpen ? sharedStyles.drawerOpen : ''}`}>
+                <div className={sharedStyles.drawerHeader}>
+                    <div className={sharedStyles.drawerTitle}>
+                        {formData.id ? '✏️ Editar Marca' : '➕ Nueva Marca'}
+                        {formData.id && <span className={sharedStyles.drawerProductName}>— {formData.nombre}</span>}
                     </div>
+                    <button className={sharedStyles.drawerClose} onClick={() => setModalOpen(false)}>×</button>
                 </div>
-            )}
+                <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+                    <div className={sharedStyles.drawerBody} style={{ padding: '1.5rem', overflowY: 'auto' }}>
+                        <div className={sharedStyles.formGrid2}>
+                            <div className={sharedStyles.formGroup}>
+                                <label className={sharedStyles.labelRequired}>Nombre</label>
+                                <input type="text" name="nombre" value={formData.nombre} onChange={handleFormChange} required className={sharedStyles.input} />
+                            </div>
+                            <div className={sharedStyles.formGroup}>
+                                <label className={sharedStyles.label}>Slug</label>
+                                <input type="text" name="slug" value={formData.slug} onChange={handleFormChange} className={sharedStyles.input} />
+                            </div>
+                            <div className={sharedStyles.formGroup}>
+                                <label className={sharedStyles.label}>Imagen URL</label>
+                                <input type="text" name="imagen_url" value={formData.imagen_url} onChange={handleFormChange} className={sharedStyles.input} />
+                            </div>
+                        </div>
+                        <div className={sharedStyles.formGroupFull} style={{ marginTop: '1rem' }}>
+                            <label className={sharedStyles.label}>Descripción</label>
+                            <textarea name="descripcion" value={formData.descripcion} onChange={handleFormChange} className={sharedStyles.textarea}></textarea>
+                        </div>
+                        <div style={{ marginTop: '1.5rem' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', padding: '1rem', background: formData.is_active ? '#f0fdf4' : '#fff', border: `1.5px solid ${formData.is_active ? '#2e3b23' : '#e8e8e8'}`, borderRadius: '8px' }}>
+                                <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleFormChange} style={{ width: '18px', height: '18px', accentColor: '#2e3b23' }} />
+                                <div>
+                                    <div style={{ fontWeight: 600, fontSize: '.9rem' }}>🟢 Marca Activa</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div className={sharedStyles.drawerFooter}>
+                        <button type="button" onClick={() => setModalOpen(false)} className={`${sharedStyles.btn} ${sharedStyles.btnGhost}`}>Cancelar</button>
+                        <button type="submit" className={`${sharedStyles.btn} ${sharedStyles.btnPrimary}`}>{formData.id ? '✅ Guardar Cambios' : '✅ Crear Marca'}</button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

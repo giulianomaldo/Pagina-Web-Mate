@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import productos from '../../data/productos.json';
+import { api } from '../../utils/api';
 import { useCart } from '../../context/CartContext';
-import { formatCurrency, emojiPorCategoria } from '../../utils/helpers';
+import { formatCurrency } from '../../utils/helpers';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import Badge from '../../components/Badge/Badge';
 import Button from '../../components/Button/Button';
@@ -15,31 +15,63 @@ export default function ProductoDetalle() {
   const navigate = useNavigate();
   const { addItem, openDrawer } = useCart();
 
-  const producto = productos.find((p) => p.id === Number(id));
-
+  const [producto, setProducto]   = useState(null);
+  const [relacionados, setRelacionados] = useState([]);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState(null);
   const [imgActiva, setImgActiva] = useState(0);
 
-  if (!producto) {
-    return (
-      <div className={styles.notFound}>
-        <p className={styles.notFoundIcon}>😕</p>
-        <h2>Producto no encontrado</h2>
-        <Button variant="primary" onClick={() => navigate('/productos')}>Ver catálogo</Button>
-      </div>
-    );
-  }
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    // Intenta buscar por slug primero, luego por id
+    api.get(`/productos/${id}`)
+      .then(res => {
+        if (cancelled) return;
+        const p = res?.data?.producto || null;
+        setProducto(p);
+        if (p?.categoria?.slug) {
+          return api.get(`/productos?categoria=${p.categoria.slug}&limit=5`);
+        }
+      })
+      .then(res => {
+        if (cancelled || !res) return;
+        const todos = res?.data?.productos || [];
+        setRelacionados(todos.filter(p => String(p.id) !== String(id)).slice(0, 4));
+      })
+      .catch(err => {
+        if (!cancelled) setError(err.message);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [id]);
 
-  const relacionados = productos
-    .filter((p) => p.categoria === producto.categoria && p.id !== producto.id)
-    .slice(0, 4);
+  if (loading) return (
+    <div className={styles.notFound}>
+      <p className={styles.notFoundIcon}>⏳</p>
+      <h2>Cargando producto...</h2>
+    </div>
+  );
 
-  const imagenes = producto.imagenes?.length > 0 ? producto.imagenes : [producto.imagen];
+  if (error || !producto) return (
+    <div className={styles.notFound}>
+      <p className={styles.notFoundIcon}>😕</p>
+      <h2>Producto no encontrado</h2>
+      <Button variant="primary" onClick={() => navigate('/productos')}>Ver catálogo</Button>
+    </div>
+  );
+
+  const imagenes = producto.imagenes?.length > 0
+    ? producto.imagenes
+    : [producto.imagen_url].filter(Boolean);
+  if (imagenes.length === 0) imagenes.push('https://via.placeholder.com/400x400?text=Sin+imagen');
 
   const handleAgregar = () => {
-    addItem(producto);
-    toast.success(`${producto.nombre} agregado al carrito`, {
-      icon: emojiPorCategoria(producto.categoria),
-    });
+    addItem({ ...producto, imagen: producto.imagen_url });
+    toast.success(`${producto.nombre} agregado al carrito`, { icon: producto.categoria?.emoji || '🛍️' });
     openDrawer();
   };
 
@@ -93,17 +125,16 @@ export default function ProductoDetalle() {
         {/* Info */}
         <div className={styles.info}>
           <div className={styles.badges}>
-            {producto.nuevo      && <Badge variant="nuevo">Nuevo</Badge>}
-            {producto.masVendido && <Badge variant="masVendido">⭐ Top Ventas</Badge>}
+            {producto.is_nuevo      && <Badge variant="nuevo">Nuevo</Badge>}
+            {producto.is_mas_vendido && <Badge variant="masVendido">⭐ Top Ventas</Badge>}
           </div>
 
           <p className={styles.categoria}>
-            {emojiPorCategoria(producto.categoria)} {producto.categoria} — {producto.tipo}
+            {producto.categoria?.emoji} {producto.categoria?.nombre} — {producto.tipo}
           </p>
 
           <h1 className={styles.nombre}>{producto.nombre}</h1>
-          <p className={styles.marca}>por {producto.marca}</p>
-
+          <p className={styles.marca}>por {producto.marca?.nombre}</p>
           <p className={styles.descripcion}>{producto.descripcion}</p>
 
           <div className={styles.precioRow}>
@@ -115,9 +146,7 @@ export default function ProductoDetalle() {
 
           <div className={styles.actions}>
             <Button
-              variant="primary"
-              size="lg"
-              fullWidth
+              variant="primary" size="lg" fullWidth
               onClick={handleAgregar}
               disabled={producto.stock === 0}
               aria-label={`Agregar ${producto.nombre} al carrito`}
@@ -136,7 +165,7 @@ export default function ProductoDetalle() {
         <section className={styles.relacionados} aria-labelledby="relacionados-titulo">
           <h2 id="relacionados-titulo" className={styles.relTitle}>También te puede interesar</h2>
           <div className={styles.relGrid}>
-            {relacionados.map((p) => (
+            {relacionados.map(p => (
               <ProductCard key={p.id} producto={p} />
             ))}
           </div>

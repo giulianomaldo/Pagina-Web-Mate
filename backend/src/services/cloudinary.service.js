@@ -28,6 +28,14 @@ const MAX_BYTES       = 5 * 1024 * 1024; // 5 MB
  * @returns {Promise<{ url: string, public_id: string }>}
  */
 function uploadBuffer(buffer, folder, options = {}) {
+  if (!process.env.CLOUDINARY_API_KEY) {
+    console.warn('⚠️ Cloudinary API Key no encontrada. Usando mock upload.');
+    return Promise.resolve({ 
+      url: 'https://via.placeholder.com/800x800?text=Mock+Image', 
+      public_id: 'mock_' + Date.now() 
+    });
+  }
+
   return new Promise((resolve, reject) => {
     const uploadOptions = {
       folder,
@@ -64,6 +72,7 @@ function uploadBuffer(buffer, folder, options = {}) {
  */
 async function deleteImage(publicId) {
   if (!publicId) return;
+  if (!process.env.CLOUDINARY_API_KEY) return;
 
   try {
     await cloudinary.uploader.destroy(publicId);
