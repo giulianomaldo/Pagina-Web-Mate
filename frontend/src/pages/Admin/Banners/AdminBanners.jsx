@@ -142,12 +142,12 @@ const AdminBanners = () => {
                                 </span>
                             </td>
                             <td>
-                                <button className={sharedStyles.btnAction} onClick={() => handleEdit(banner)}>Editar</button>
+                                <button className={sharedStyles.actionBtnEdit} onClick={() => handleEdit(banner)}>✏️ Editar</button>
                                 <button className={sharedStyles.btnAction} onClick={() => handleToggleActive(banner)}>
                                     {banner.is_active ? 'Desactivar' : 'Activar'}
                                 </button>
                                 {admin?.is_superadmin && (
-                                    <button className={sharedStyles.btnActionDelete} onClick={() => handleDelete(banner.id)}>Eliminar</button>
+                                    <button className={sharedStyles.actionBtnDelete} onClick={() => handleDelete(banner.id)}>🗑️ Eliminar</button>
                                 )}
                             </td>
                         </tr>

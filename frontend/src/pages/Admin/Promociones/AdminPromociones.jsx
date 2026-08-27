@@ -195,8 +195,8 @@ const AdminPromociones = () => {
                     </label>
                   </td>
                   <td className={sharedStyles.actions}>
-                    <button onClick={() => handleOpenModal(promo)} className={sharedStyles.editBtn}>Editar</button>
-                    <button onClick={() => handleDelete(promo.id)} className={sharedStyles.deleteBtn}>Eliminar</button>
+                    <button onClick={() => handleOpenModal(promo)} className={sharedStyles.actionBtnEdit}>✏️ Editar</button>
+                    <button onClick={() => handleDelete(promo.id)} className={sharedStyles.actionBtnDelete}>🗑️ Eliminar</button>
                   </td>
                 </tr>
               ))}

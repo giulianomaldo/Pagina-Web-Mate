@@ -416,10 +416,10 @@ const AdminProductos = () => {
                     </td>
                     <td>
                       <div className={sharedStyles.actions}>
-                        <button className={styles.actionBtnEdit}   onClick={() => openDrawer('edit', p)}>✏️ Editar</button>
+                        <button className={sharedStyles.actionBtnEdit}   onClick={() => openDrawer('edit', p)}>✏️ Editar</button>
                         <button className={styles.actionBtnStock}  onClick={() => openStockModal(p)}>📦 Stock</button>
                         {admin?.rol === 'superadmin' && (
-                          <button className={styles.actionBtnDelete} onClick={() => handleDelete(p.id)}>🗑️</button>
+                          <button className={sharedStyles.actionBtnDelete} onClick={() => handleDelete(p.id)}>🗑️ Eliminar</button>
                         )}
                       </div>
                     </td>

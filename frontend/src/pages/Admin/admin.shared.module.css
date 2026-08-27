@@ -244,6 +244,38 @@
   flex-wrap: wrap;
 }
 
+.actionBtnEdit {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .3rem .7rem;
+  font-size: .78rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1.5px solid #2e3b23;
+  background: transparent;
+  color: #2e3b23;
+  transition: background .15s, color .15s;
+}
+.actionBtnEdit:hover { background: #2e3b23; color: #fff; }
+
+.actionBtnDelete {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .3rem .7rem;
+  font-size: .78rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1.5px solid #dc2626;
+  background: transparent;
+  color: #dc2626;
+  transition: background .15s, color .15s;
+}
+.actionBtnDelete:hover { background: #dc2626; color: #fff; }
+
 /* ── Toggle switch ── */
 .toggleWrap {
   display: flex;

@@ -126,12 +126,12 @@ const AdminCategorias = () => {
                                 </span>
                             </td>
                             <td>
-                                <button className={sharedStyles.btnAction} onClick={() => handleEdit(cat)}>Editar</button>
+                                <button className={sharedStyles.actionBtnEdit} onClick={() => handleEdit(cat)}>✏️ Editar</button>
                                 <button className={sharedStyles.btnAction} onClick={() => handleToggleActive(cat)}>
                                     {cat.is_active ? 'Desactivar' : 'Activar'}
                                 </button>
                                 {admin?.is_superadmin && (
-                                    <button className={sharedStyles.btnActionDelete} onClick={() => handleDelete(cat.id)}>Eliminar</button>
+                                    <button className={sharedStyles.actionBtnDelete} onClick={() => handleDelete(cat.id)}>🗑️ Eliminar</button>
                                 )}
                             </td>
                         </tr>

@@ -112,12 +112,12 @@ const AdminMarcas = () => {
                                 </span>
                             </td>
                             <td>
-                                <button className={sharedStyles.btnAction} onClick={() => handleEdit(marca)}>Editar</button>
+                                <button className={sharedStyles.actionBtnEdit} onClick={() => handleEdit(marca)}>✏️ Editar</button>
                                 <button className={sharedStyles.btnAction} onClick={() => handleToggleActive(marca)}>
                                     {marca.is_active ? 'Desactivar' : 'Activar'}
                                 </button>
                                 {admin?.is_superadmin && (
-                                    <button className={sharedStyles.btnActionDelete} onClick={() => handleDelete(marca.id)}>Eliminar</button>
+                                    <button className={sharedStyles.actionBtnDelete} onClick={() => handleDelete(marca.id)}>🗑️ Eliminar</button>
                                 )}
                             </td>
                         </tr>
