@@ -1,7 +1,7 @@
 'use strict';
 
 const marcaRepo = require('../repositories/marca.repository');
-const cloudinarySvc = require('./cloudinary.service');
+const storageSvc = require('./supabase.service');
 const { generateUniqueSlug } = require('../utils/slugify');
 const ApiError = require('../utils/ApiError');
 
@@ -11,7 +11,7 @@ const ApiError = require('../utils/ApiError');
  * Capa de lógica de negocio para Marca.
  */
 
-const CLOUDINARY_FOLDER = 'encontrarte/marcas';
+const STORAGE_FOLDER = 'encontrarte/marcas';
 
 /**
  * Genera un slug único para una marca.
@@ -33,7 +33,7 @@ async function buildSlug(nombre, excludeId = null) {
  */
 async function uploadLogo(file) {
   if (!file) return {};
-  const { url, public_id } = await cloudinarySvc.uploadBuffer(file.buffer, CLOUDINARY_FOLDER);
+  const { url, public_id } = await storageSvc.uploadBuffer(file.buffer, STORAGE_FOLDER);
   return { logo_url: url, logo_public_id: public_id };
 }
 
@@ -57,12 +57,18 @@ async function create(data, file) {
   const slug = await buildSlug(data.nombre);
   const logoData = await uploadLogo(file);
 
-  return marcaRepo.create({
-    ...data,
-    slug,
-    ...logoData,
-  });
-}
+  try {
+    return await marcaRepo.create({
+      ...data,
+      slug,
+      ...logoData,
+    });
+  } catch (err) {
+    if (logoData.logo_public_id) {
+      await storageSvc.deleteImage(logoData.logo_public_id).catch(console.error);
+    }
+    throw err;
+  }
 
 async function update(id, data, file) {
   const marca = await marcaRepo.findById(id, { isAdmin: true });
@@ -74,20 +80,30 @@ async function update(id, data, file) {
 
   let logoData = {};
   if (file) {
-    const { url, public_id } = await cloudinarySvc.uploadBuffer(file.buffer, CLOUDINARY_FOLDER);
-    await cloudinarySvc.deleteImage(marca.logo_public_id);
+    const { url, public_id } = await storageSvc.uploadBuffer(file.buffer, STORAGE_FOLDER);
     logoData.logo_url = url;
     logoData.logo_public_id = public_id;
   }
 
-  return marcaRepo.update(marca, { ...data, slug, ...logoData });
+  try {
+    const updated = await marcaRepo.update(marca, { ...data, slug, ...logoData });
+    if (logoData.logo_public_id && marca.logo_public_id) {
+      await storageSvc.deleteImage(marca.logo_public_id).catch(console.error);
+    }
+    return updated;
+  } catch (err) {
+    if (logoData.logo_public_id) {
+      await storageSvc.deleteImage(logoData.logo_public_id).catch(console.error);
+    }
+    throw err;
+  }
 }
 
 async function destroy(id) {
   const marca = await marcaRepo.findById(id);
   if (!marca) throw ApiError.notFound('Marca no encontrada.');
 
-  await cloudinarySvc.deleteImage(marca.logo_public_id);
+  await storageSvc.deleteImage(marca.logo_public_id);
   await marcaRepo.destroy(marca);
 }
 

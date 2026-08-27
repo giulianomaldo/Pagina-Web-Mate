@@ -1,7 +1,7 @@
 'use strict';
 
 const categoriaRepo = require('../repositories/categoria.repository');
-const cloudinarySvc = require('./cloudinary.service');
+const storageSvc = require('./supabase.service');
 const { generateUniqueSlug } = require('../utils/slugify');
 const ApiError = require('../utils/ApiError');
 
@@ -11,7 +11,7 @@ const ApiError = require('../utils/ApiError');
  * Capa de lógica de negocio para Categoria.
  */
 
-const CLOUDINARY_FOLDER = 'encontrarte/categorias';
+const STORAGE_FOLDER = 'encontrarte/categorias';
 
 /**
  * Genera un slug único para una categoría.
@@ -33,7 +33,7 @@ async function buildSlug(nombre, excludeId = null) {
  */
 async function uploadImage(file) {
   if (!file) return {};
-  const { url, public_id } = await cloudinarySvc.uploadBuffer(file.buffer, CLOUDINARY_FOLDER);
+  const { url, public_id } = await storageSvc.uploadBuffer(file.buffer, STORAGE_FOLDER);
   return { imagen_url: url, imagen_public_id: public_id };
 }
 
@@ -57,11 +57,18 @@ async function create(data, file) {
   const slug = await buildSlug(data.nombre);
   const imageData = await uploadImage(file);
 
-  return categoriaRepo.create({
-    ...data,
-    slug,
-    ...imageData,
-  });
+  try {
+    return await categoriaRepo.create({
+      ...data,
+      slug,
+      ...imageData,
+    });
+  } catch (err) {
+    if (imageData.imagen_public_id) {
+      await storageSvc.deleteImage(imageData.imagen_public_id).catch(console.error);
+    }
+    throw err;
+  }
 }
 
 async function update(id, data, file) {
@@ -78,20 +85,30 @@ async function update(id, data, file) {
 
   let imageData = {};
   if (file) {
-    const { url, public_id } = await cloudinarySvc.uploadBuffer(file.buffer, CLOUDINARY_FOLDER);
-    await cloudinarySvc.deleteImage(categoria.imagen_public_id);
+    const { url, public_id } = await storageSvc.uploadBuffer(file.buffer, STORAGE_FOLDER);
     imageData.imagen_url = url;
     imageData.imagen_public_id = public_id;
   }
 
-  return categoriaRepo.update(categoria, { ...data, slug, ...imageData });
+  try {
+    const updated = await categoriaRepo.update(categoria, { ...data, slug, ...imageData });
+    if (imageData.imagen_public_id && categoria.imagen_public_id) {
+      await storageSvc.deleteImage(categoria.imagen_public_id).catch(console.error);
+    }
+    return updated;
+  } catch (err) {
+    if (imageData.imagen_public_id) {
+      await storageSvc.deleteImage(imageData.imagen_public_id).catch(console.error);
+    }
+    throw err;
+  }
 }
 
 async function destroy(id) {
   const categoria = await categoriaRepo.findById(id);
   if (!categoria) throw ApiError.notFound('Categoría no encontrada.');
 
-  await cloudinarySvc.deleteImage(categoria.imagen_public_id);
+  await storageSvc.deleteImage(categoria.imagen_public_id);
   await categoriaRepo.destroy(categoria);
 }
 

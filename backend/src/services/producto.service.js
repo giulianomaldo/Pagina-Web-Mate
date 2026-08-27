@@ -1,7 +1,7 @@
 'use strict';
 
 const productoRepo      = require('../repositories/producto.repository');
-const cloudinarySvc     = require('./cloudinary.service');
+const storageSvc     = require('./supabase.service');
 const { generateUniqueSlug } = require('../utils/slugify');
 const ApiError          = require('../utils/ApiError');
 
@@ -13,7 +13,7 @@ const ApiError          = require('../utils/ApiError');
  * No conoce Express (req/res) — recibe datos planos, devuelve instancias.
  */
 
-const CLOUDINARY_FOLDER = 'encontrarte/productos';
+const STORAGE_FOLDER = 'encontrarte/productos';
 
 // ── Helpers privados ──────────────────────────────────────────────────
 
@@ -40,18 +40,18 @@ async function uploadImages(mainFile, galleryFiles = []) {
   const result = {};
 
   if (mainFile) {
-    const { url, public_id } = await cloudinarySvc.uploadBuffer(
+    const { url, public_id } = await storageSvc.uploadBuffer(
       mainFile.buffer,
-      CLOUDINARY_FOLDER,
+      STORAGE_FOLDER,
     );
     result.imagen_url       = url;
     result.imagen_public_id = public_id;
   }
 
   if (galleryFiles.length > 0) {
-    result.imagenes = await cloudinarySvc.uploadMultiple(
+    result.imagenes = await storageSvc.uploadMultiple(
       galleryFiles.map((f) => f.buffer),
-      CLOUDINARY_FOLDER,
+      STORAGE_FOLDER,
     );
   }
 
@@ -96,15 +96,27 @@ async function create(data, files = {}) {
     files.imagenes || [],
   );
 
-  // 3. Crear en DB
-  const producto = await productoRepo.create({
-    ...data,
-    slug,
-    ...imageData,
-  });
+  try {
+    // 3. Crear en DB
+    const producto = await productoRepo.create({
+      ...data,
+      slug,
+      ...imageData,
+    });
 
-  // 4. Recargar con relaciones para devolver el objeto completo
-  return productoRepo.findById(producto.id, { isAdmin: true });
+    // 4. Recargar con relaciones para devolver el objeto completo
+    return productoRepo.findById(producto.id, { isAdmin: true });
+  } catch (err) {
+    // Rollback de imágenes si falla la BD
+    if (imageData.imagen_public_id) {
+      await storageSvc.deleteImage(imageData.imagen_public_id).catch(console.error);
+    }
+    if (imageData.imagenes?.length > 0) {
+      const publicIds = imageData.imagenes.map(i => i.public_id);
+      await storageSvc.deleteMultiple(publicIds).catch(console.error);
+    }
+    throw err;
+  }
 }
 
 // ── update ────────────────────────────────────────────────────────────
@@ -122,30 +134,51 @@ async function update(id, data, files = {}) {
   let imageData = {};
   if (files.imagen?.[0]) {
     // Subir nueva imagen
-    const { url, public_id } = await cloudinarySvc.uploadBuffer(
+    const { url, public_id } = await storageSvc.uploadBuffer(
       files.imagen[0].buffer,
-      CLOUDINARY_FOLDER,
+      STORAGE_FOLDER,
     );
-    // Eliminar imagen anterior de Cloudinary
-    await cloudinarySvc.deleteImage(producto.imagen_public_id);
     imageData.imagen_url       = url;
     imageData.imagen_public_id = public_id;
   }
 
   // 3. Manejar galería si se reemplaza
   if (files.imagenes?.length > 0) {
-    // Eliminar imágenes anteriores
-    const oldPublicIds = (producto.imagenes || []).map((i) => i.public_id);
-    await cloudinarySvc.deleteMultiple(oldPublicIds);
-
-    imageData.imagenes = await cloudinarySvc.uploadMultiple(
+    imageData.imagenes = await storageSvc.uploadMultiple(
       files.imagenes.map((f) => f.buffer),
-      CLOUDINARY_FOLDER,
+      STORAGE_FOLDER,
     );
   }
 
-  // 4. Actualizar
-  return productoRepo.update(producto, { ...data, slug, ...imageData });
+  try {
+    // 4. Actualizar en DB
+    await productoRepo.update(producto, {
+      ...data,
+      slug,
+      ...imageData,
+    });
+
+    // 5. Eliminar imágenes viejas solo si la actualización fue exitosa
+    if (imageData.imagen_public_id && producto.imagen_public_id) {
+      await storageSvc.deleteImage(producto.imagen_public_id).catch(console.error);
+    }
+    if (imageData.imagenes?.length > 0 && producto.imagenes?.length > 0) {
+      const oldPublicIds = producto.imagenes.map((i) => i.public_id);
+      await storageSvc.deleteMultiple(oldPublicIds).catch(console.error);
+    }
+
+    return productoRepo.findById(id, { isAdmin: true });
+  } catch (err) {
+    // Rollback de nuevas imágenes si falla la BD
+    if (imageData.imagen_public_id) {
+      await storageSvc.deleteImage(imageData.imagen_public_id).catch(console.error);
+    }
+    if (imageData.imagenes?.length > 0) {
+      const publicIds = imageData.imagenes.map(i => i.public_id);
+      await storageSvc.deleteMultiple(publicIds).catch(console.error);
+    }
+    throw err;
+  }
 }
 
 // ── destroy ───────────────────────────────────────────────────────────
@@ -154,10 +187,10 @@ async function destroy(id) {
   const producto = await productoRepo.findById(id);
   if (!producto) throw ApiError.notFound('Producto no encontrado.');
 
-  // Eliminar imágenes de Cloudinary antes de destruir el registro
-  await cloudinarySvc.deleteImage(producto.imagen_public_id);
+  // Eliminar imágenes de Storage antes de destruir el registro
+  await storageSvc.deleteImage(producto.imagen_public_id);
   const galleryIds = (producto.imagenes || []).map((i) => i.public_id);
-  await cloudinarySvc.deleteMultiple(galleryIds);
+  await storageSvc.deleteMultiple(galleryIds);
 
   await productoRepo.destroy(producto);
 }

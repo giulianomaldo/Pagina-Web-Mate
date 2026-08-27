@@ -14,6 +14,12 @@ const NAV_ITEMS = [
     ],
   },
   {
+    section: 'Ventas',
+    links: [
+      { to: '/admin/pedidos',     icon: '🛒',  label: 'Pedidos'    },
+    ],
+  },
+  {
     section: 'Marketing',
     links: [
       { to: '/admin/banners',     icon: '🖼️',  label: 'Banners'    },

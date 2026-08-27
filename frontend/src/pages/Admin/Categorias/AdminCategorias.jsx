@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import sharedStyles from '../admin.shared.module.css';
-import styles from './AdminCategorias.module.css';
 import { adminApi } from '../../../utils/api';
 import { useAuth } from '../../../context/AuthContext';
 
@@ -9,9 +8,14 @@ const AdminCategorias = () => {
     const [categorias, setCategorias] = useState([]);
     const [search, setSearch] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState('');
     const [formData, setFormData] = useState({
         id: null, nombre: '', slug: '', emoji: '', descripcion: '', orden: 0, parent_id: '', is_active: true
     });
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState('');
+    const fileInputRef = useRef(null);
 
     const fetchCategorias = async () => {
         try {
@@ -22,15 +26,13 @@ const AdminCategorias = () => {
         }
     };
 
-    useEffect(() => {
-        fetchCategorias();
-    }, []);
+    useEffect(() => { fetchCategorias(); }, []);
 
     const handleSearchChange = (e) => setSearch(e.target.value);
 
     const handleFormChange = (e) => {
         const { name, value, type, checked } = e.target;
-        let newValue = type === 'checkbox' ? checked : value;
+        const newValue = type === 'checkbox' ? checked : value;
         setFormData(prev => {
             const nextData = { ...prev, [name]: newValue };
             if (name === 'nombre' && !prev.id) {
@@ -40,50 +42,77 @@ const AdminCategorias = () => {
         });
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        setImageFile(file);
+        setImagePreview(URL.createObjectURL(file));
+    };
+
     const handleSave = async (e) => {
         e.preventDefault();
+        setSaving(true);
+        setError('');
         try {
-            const data = { ...formData };
-            if (!data.parent_id) delete data.parent_id;
-            
+            // Siempre usar FormData para soportar imagen
+            const fd = new FormData();
+            fd.append('nombre', formData.nombre);
+            fd.append('slug', formData.slug);
+            fd.append('emoji', formData.emoji || '');
+            fd.append('descripcion', formData.descripcion || '');
+            fd.append('orden', formData.orden || 0);
+            fd.append('is_active', formData.is_active ? 'true' : 'false');
+            if (formData.parent_id) fd.append('parent_id', formData.parent_id);
+            if (imageFile) fd.append('imagen', imageFile);
+
             if (formData.id) {
-                await adminApi.put(`/api/categorias/${formData.id}`, data);
+                await adminApi.put(`/categorias/${formData.id}`, fd, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
             } else {
-                await adminApi.post('/categorias', data);
+                await adminApi.post('/categorias', fd, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
             }
             setModalOpen(false);
             fetchCategorias();
-        } catch (error) {
-            console.error(error);
+        } catch (err) {
+            setError(err?.response?.data?.message || err.message || 'Error al guardar');
+        } finally {
+            setSaving(false);
         }
     };
 
     const handleEdit = (cat) => {
         setFormData({ ...cat, parent_id: cat.parent_id || '' });
+        setImageFile(null);
+        setImagePreview(cat.imagen_url || '');
+        setError('');
+        setModalOpen(true);
+    };
+
+    const handleNew = () => {
+        setFormData({ id: null, nombre: '', slug: '', emoji: '', descripcion: '', orden: 0, parent_id: '', is_active: true });
+        setImageFile(null);
+        setImagePreview('');
+        setError('');
         setModalOpen(true);
     };
 
     const handleToggleActive = async (cat) => {
         try {
-            if (cat.is_active) {
-                await adminApi.patch(`/api/categorias/${cat.id}/desactivar`);
-            } else {
-                await adminApi.patch(`/api/categorias/${cat.id}/activar`);
-            }
+            const endpoint = cat.is_active ? `/categorias/${cat.id}/desactivar` : `/categorias/${cat.id}/activar`;
+            await adminApi.patch(endpoint);
             fetchCategorias();
-        } catch (error) {
-            console.error(error);
-        }
+        } catch (error) { console.error(error); }
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm("¿Seguro que deseas eliminar esta categoría?")) return;
+        if (!window.confirm('¿Seguro que deseas eliminar esta categoría?')) return;
         try {
-            await adminApi.delete(`/api/categorias/${id}`);
+            await adminApi.delete(`/categorias/${id}`);
             fetchCategorias();
-        } catch (error) {
-            console.error(error);
-        }
+        } catch (error) { console.error(error); }
     };
 
     const filtered = categorias.filter(c => c.nombre?.toLowerCase().includes(search.toLowerCase()));
@@ -92,52 +121,67 @@ const AdminCategorias = () => {
         <div className={sharedStyles.container}>
             <div className={sharedStyles.header}>
                 <h1>Categorías</h1>
-                <button id="categorias-new-btn" className={sharedStyles.btnPrimary} onClick={() => {
-                    setFormData({ id: null, nombre: '', slug: '', emoji: '', descripcion: '', orden: 0, parent_id: '', is_active: true });
-                    setModalOpen(true);
-                }}>Nueva Categoría</button>
+                <button id="categorias-new-btn" className={sharedStyles.btnPrimary} onClick={handleNew}>
+                    + Nueva Categoría
+                </button>
             </div>
-            
-            <input id="categorias-search" type="text" placeholder="Buscar categoría..." value={search} onChange={handleSearchChange} className={sharedStyles.searchInput} />
 
-            <table className={sharedStyles.table}>
-                <thead>
-                    <tr>
-                        <th>Emoji</th>
-                        <th>Nombre</th>
-                        <th>Slug</th>
-                        <th>Descripción</th>
-                        <th>Orden</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filtered.map(cat => (
-                        <tr key={cat.id}>
-                            <td>{cat.emoji}</td>
-                            <td>{cat.nombre}</td>
-                            <td>{cat.slug}</td>
-                            <td>{cat.descripcion}</td>
-                            <td>{cat.orden}</td>
-                            <td>
-                                <span className={cat.is_active ? sharedStyles.badgeGreen : sharedStyles.badgeRed}>
-                                    {cat.is_active ? 'Activo' : 'Inactivo'}
-                                </span>
-                            </td>
-                            <td>
-                                <button className={sharedStyles.btnAction} onClick={() => handleEdit(cat)}>Editar</button>
-                                <button className={sharedStyles.btnAction} onClick={() => handleToggleActive(cat)}>
-                                    {cat.is_active ? 'Desactivar' : 'Activar'}
-                                </button>
-                                {admin?.is_superadmin && (
-                                    <button className={sharedStyles.btnActionDelete} onClick={() => handleDelete(cat.id)}>Eliminar</button>
-                                )}
-                            </td>
+            <input
+                id="categorias-search"
+                type="text"
+                placeholder="Buscar categoría..."
+                value={search}
+                onChange={handleSearchChange}
+                className={sharedStyles.searchInput}
+            />
+
+            <div className={sharedStyles.tableWrap}>
+                <table className={sharedStyles.table}>
+                    <thead>
+                        <tr>
+                            <th>Imagen</th>
+                            <th>Emoji</th>
+                            <th>Nombre</th>
+                            <th>Slug</th>
+                            <th>Orden</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {filtered.length === 0 ? (
+                            <tr><td colSpan="7" className={sharedStyles.emptyState}>No hay categorías.</td></tr>
+                        ) : filtered.map(cat => (
+                            <tr key={cat.id}>
+                                <td>
+                                    {cat.imagen_url
+                                        ? <img src={cat.imagen_url} alt={cat.nombre} style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 8 }} />
+                                        : <span style={{ color: '#aaa', fontSize: 12 }}>Sin imagen</span>
+                                    }
+                                </td>
+                                <td>{cat.emoji}</td>
+                                <td><strong>{cat.nombre}</strong></td>
+                                <td style={{ fontSize: 12, color: '#888' }}>{cat.slug}</td>
+                                <td>{cat.orden}</td>
+                                <td>
+                                    <span className={cat.is_active ? sharedStyles.badgeGreen : sharedStyles.badgeRed}>
+                                        {cat.is_active ? 'Activo' : 'Inactivo'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button className={sharedStyles.btnAction} onClick={() => handleEdit(cat)}>Editar</button>
+                                    <button className={sharedStyles.btnAction} onClick={() => handleToggleActive(cat)}>
+                                        {cat.is_active ? 'Desactivar' : 'Activar'}
+                                    </button>
+                                    {admin?.rol === 'superadmin' && (
+                                        <button className={sharedStyles.btnActionDelete} onClick={() => handleDelete(cat.id)}>Eliminar</button>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
             {modalOpen && (
                 <div className={sharedStyles.modalOverlay}>
@@ -145,7 +189,7 @@ const AdminCategorias = () => {
                         <h2>{formData.id ? 'Editar Categoría' : 'Nueva Categoría'}</h2>
                         <form onSubmit={handleSave}>
                             <div className={sharedStyles.formGroup}>
-                                <label>Nombre</label>
+                                <label>Nombre *</label>
                                 <input type="text" name="nombre" value={formData.nombre} onChange={handleFormChange} required />
                             </div>
                             <div className={sharedStyles.formGroup}>
@@ -154,11 +198,11 @@ const AdminCategorias = () => {
                             </div>
                             <div className={sharedStyles.formGroup}>
                                 <label>Emoji</label>
-                                <input type="text" name="emoji" value={formData.emoji} onChange={handleFormChange} />
+                                <input type="text" name="emoji" value={formData.emoji} onChange={handleFormChange} placeholder="🌿" />
                             </div>
                             <div className={sharedStyles.formGroup}>
                                 <label>Descripción</label>
-                                <textarea name="descripcion" value={formData.descripcion} onChange={handleFormChange}></textarea>
+                                <textarea name="descripcion" value={formData.descripcion} onChange={handleFormChange} rows={3} />
                             </div>
                             <div className={sharedStyles.formGroup}>
                                 <label>Orden</label>
@@ -173,15 +217,36 @@ const AdminCategorias = () => {
                                     ))}
                                 </select>
                             </div>
+                            <div className={sharedStyles.formGroup}>
+                                <label>Imagen</label>
+                                {imagePreview && (
+                                    <img
+                                        src={imagePreview}
+                                        alt="Preview"
+                                        style={{ width: '100%', maxHeight: 160, objectFit: 'cover', borderRadius: 8, marginBottom: 8 }}
+                                    />
+                                )}
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="image/png,image/jpeg,image/webp"
+                                    onChange={handleImageChange}
+                                    style={{ width: '100%' }}
+                                />
+                                <small style={{ color: '#888' }}>PNG, JPG o WEBP — máx. 5MB</small>
+                            </div>
                             <div className={sharedStyles.formGroupCheckbox}>
                                 <label>
                                     <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleFormChange} />
-                                    Activo
+                                    &nbsp;Activo
                                 </label>
                             </div>
+                            {error && <p style={{ color: 'red', fontSize: 13 }}>⚠️ {error}</p>}
                             <div className={sharedStyles.modalActions}>
                                 <button type="button" onClick={() => setModalOpen(false)} className={sharedStyles.btnSecondary}>Cancelar</button>
-                                <button type="submit" className={sharedStyles.btnPrimary}>Guardar</button>
+                                <button type="submit" className={sharedStyles.btnPrimary} disabled={saving}>
+                                    {saving ? 'Guardando...' : 'Guardar'}
+                                </button>
                             </div>
                         </form>
                     </div>

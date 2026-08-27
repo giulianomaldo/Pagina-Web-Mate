@@ -108,6 +108,7 @@
 }
 
 .btnPrimary {
+  composes: btn;
   background: var(--admin-sidebar-bg, #141a10);
   color: #ffffff;
 }
@@ -117,6 +118,7 @@
 }
 
 .btnSuccess {
+  composes: btn;
   background: var(--admin-success, #3d9e5f);
   color: #fff;
 }
@@ -124,6 +126,7 @@
 .btnSuccess:hover { opacity: 0.85; }
 
 .btnDanger {
+  composes: btn;
   background: var(--admin-danger, #e05252);
   color: #fff;
 }
@@ -131,6 +134,7 @@
 .btnDanger:hover { opacity: 0.85; }
 
 .btnWarning {
+  composes: btn;
   background: var(--admin-warning, #e0a000);
   color: #fff;
 }
@@ -138,9 +142,40 @@
 .btnWarning:hover { opacity: 0.85; }
 
 .btnGhost {
+  composes: btn;
   background: transparent;
   color: #5a6a50;
   border: 1px solid var(--admin-border, #e2e6dc);
+}
+
+.btnGhost:hover {
+  background: #f4f5f0;
+}
+
+.btnAction {
+  composes: btn;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.775rem;
+  border-radius: 6px;
+  background: #f0f2ec;
+  color: #4a5a3a;
+  border: 1px solid #e2e6dc;
+}
+.btnAction:hover {
+  background: #e2e6dc;
+}
+
+.btnActionDelete {
+  composes: btn;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.775rem;
+  border-radius: 6px;
+  background: #fde8e8;
+  color: #c0392b;
+  border: 1px solid #f5c6c6;
+}
+.btnActionDelete:hover {
+  background: #f5c6c6;
 }
 
 .btnGhost:hover {

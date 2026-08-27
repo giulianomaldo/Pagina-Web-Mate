@@ -112,7 +112,7 @@ const AdminPromociones = () => {
       };
 
       if (editingPromo) {
-        await adminApi.put(`/api/promociones/${editingPromo.id}`, payload);
+        await adminApi.put(`/promociones/${editingPromo.id}`, payload);
       } else {
         await adminApi.post('/promociones', payload);
       }
@@ -126,7 +126,7 @@ const AdminPromociones = () => {
   const handleDelete = async (id) => {
     if (window.confirm('¿Eliminar promoción?')) {
       try {
-        await adminApi.delete(`/api/promociones/${id}`);
+        await adminApi.delete(`/promociones/${id}`);
         fetchData();
       } catch (err) {
         alert('Error al eliminar');
@@ -137,9 +137,9 @@ const AdminPromociones = () => {
   const handleToggleActive = async (id, isActive) => {
     try {
       if (isActive) {
-        await adminApi.patch(`/api/promociones/${id}/desactivar`);
+        await adminApi.patch(`/promociones/${id}/desactivar`);
       } else {
-        await adminApi.patch(`/api/promociones/${id}/activar`);
+        await adminApi.patch(`/promociones/${id}/activar`);
       }
       fetchData();
     } catch (err) {

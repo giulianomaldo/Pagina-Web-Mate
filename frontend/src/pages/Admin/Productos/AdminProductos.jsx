@@ -76,7 +76,7 @@ const AdminProductos = () => {
         query += '&includeInactive=true';
       }
       
-      const res = await adminApi.get(`/api/productos${query}`);
+      const res = await adminApi.get(`/productos${query}`);
       let data = res.data?.productos || [];
       
       // Client-side filtering as fallback for params that might not be handled by backend
@@ -156,7 +156,7 @@ const AdminProductos = () => {
         is_mas_vendido: product.is_mas_vendido || false,
         is_active: product.is_active !== false
       });
-      setImagePreview(product.imagen || null);
+      setImagePreview(product.imagen_url || null);
     } else {
       setFormData(initialForm);
       setImagePreview(null);
@@ -175,7 +175,10 @@ const AdminProductos = () => {
     try {
       const data = new FormData();
       Object.keys(formData).forEach(key => {
-        data.append(key, formData[key]);
+        const val = formData[key];
+        // No enviar strings vacíos para campos opcionales numéricos
+        if (val === '' || val === null || val === undefined) return;
+        data.append(key, val);
       });
       if (imageFile) {
         data.append('imagen', imageFile);
@@ -185,20 +188,23 @@ const AdminProductos = () => {
         await adminApi.post('/productos', data);
         showAlert('Producto creado exitosamente');
       } else {
-        await adminApi.put(`/api/productos/${currentProduct.id}`, data);
+        await adminApi.put(`/productos/${currentProduct.id}`, data);
         showAlert('Producto actualizado exitosamente');
       }
       closeFormModal();
       fetchProductos();
     } catch (error) {
-      showAlert('Error al guardar el producto', 'error');
+      console.error("Error saving product:", error);
+      const firstError = error.data?.errors?.[0];
+      const errorMsg = firstError ? (firstError.mensaje || firstError) : (error.message || 'Error al guardar el producto');
+      showAlert(errorMsg, 'error');
     }
   };
 
   const toggleStatus = async (id, currentStatus) => {
     try {
       const endpoint = currentStatus ? 'desactivar' : 'activar';
-      await adminApi.patch(`/api/productos/${id}/${endpoint}`);
+      await adminApi.patch(`/productos/${id}/${endpoint}`);
       fetchProductos();
       showAlert(`Producto ${currentStatus ? 'desactivado' : 'activado'}`);
     } catch (error) {
@@ -209,7 +215,7 @@ const AdminProductos = () => {
   const toggleProperty = async (id, prop) => {
     try {
       // prop can be 'destacado', 'nuevo', 'mas-vendido'
-      await adminApi.patch(`/api/productos/${id}/${prop}`);
+      await adminApi.patch(`/productos/${id}/${prop}`);
       fetchProductos();
     } catch (error) {
       showAlert(`Error al actualizar ${prop}`, 'error');
@@ -219,7 +225,7 @@ const AdminProductos = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('¿Estás seguro de eliminar este producto?')) return;
     try {
-      await adminApi.delete(`/api/productos/${id}`);
+      await adminApi.delete(`/productos/${id}`);
       showAlert('Producto eliminado');
       fetchProductos();
     } catch (error) {
@@ -236,7 +242,7 @@ const AdminProductos = () => {
   const handleStockSubmit = async (e) => {
     e.preventDefault();
     try {
-      await adminApi.patch(`/api/productos/${stockProduct.id}/stock`, { stock: Number(newStock) });
+      await adminApi.patch(`/productos/${stockProduct.id}/stock`, { stock: Number(newStock) });
       showAlert('Stock actualizado');
       setShowStockModal(false);
       fetchProductos();
@@ -358,8 +364,8 @@ const AdminProductos = () => {
                 return (
                   <tr key={p.id}>
                     <td>
-                      {p.imagen ? (
-                        <img src={p.imagen} alt={p.nombre} className={sharedStyles.tableImg} />
+                      {p.imagen_url ? (
+                        <img src={p.imagen_url} alt={p.nombre} className={sharedStyles.tableImg} />
                       ) : (
                         <div className={sharedStyles.tableImgPlaceholder}>Sin Img</div>
                       )}

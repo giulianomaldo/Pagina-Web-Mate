@@ -50,13 +50,9 @@ const AdminBanners = () => {
             }
 
             if (formData.id) {
-                await adminApi.put(`/api/banners/${formData.id}`, fd, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                });
+                await adminApi.put(`/banners/${formData.id}`, fd);
             } else {
-                await adminApi.post('/banners', fd, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                });
+                await adminApi.post('/banners', fd);
             }
             setModalOpen(false);
             setImageFile(null);
@@ -78,25 +74,18 @@ const AdminBanners = () => {
 
     const handleToggleActive = async (banner) => {
         try {
-            if (banner.is_active) {
-                await adminApi.patch(`/api/banners/${banner.id}/desactivar`);
-            } else {
-                await adminApi.patch(`/api/banners/${banner.id}/activar`);
-            }
+            const ep = banner.is_active ? `/banners/${banner.id}/desactivar` : `/banners/${banner.id}/activar`;
+            await adminApi.patch(ep);
             fetchBanners();
-        } catch (error) {
-            console.error(error);
-        }
+        } catch (error) { console.error(error); }
     };
 
     const handleDelete = async (id) => {
         if (!window.confirm("¿Seguro que deseas eliminar este banner?")) return;
         try {
-            await adminApi.delete(`/api/banners/${id}`);
+            await adminApi.delete(`/banners/${id}`);
             fetchBanners();
-        } catch (error) {
-            console.error(error);
-        }
+        } catch (error) { console.error(error); }
     };
 
     return (
@@ -146,7 +135,7 @@ const AdminBanners = () => {
                                 <button className={sharedStyles.btnAction} onClick={() => handleToggleActive(banner)}>
                                     {banner.is_active ? 'Desactivar' : 'Activar'}
                                 </button>
-                                {admin?.is_superadmin && (
+                                {admin?.rol === 'superadmin' && (
                                     <button className={sharedStyles.btnActionDelete} onClick={() => handleDelete(banner.id)}>Eliminar</button>
                                 )}
                             </td>

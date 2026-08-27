@@ -62,11 +62,13 @@ const crearValidator = [
     .isInt({ min: 1 }).withMessage('categoria_id debe ser un entero positivo.').toInt(),
 
   body('marca_id')
-    .notEmpty().withMessage('La marca es obligatoria.')
+    .optional({ nullable: true })
+    .customSanitizer(v => (v === '' || v === undefined || v === null) ? undefined : v)
     .isInt({ min: 1 }).withMessage('marca_id debe ser un entero positivo.').toInt(),
 
   body('proveedor_id')
     .optional({ nullable: true })
+    .customSanitizer(v => (v === '' || v === undefined || v === null) ? undefined : v)
     .isInt({ min: 1 }).withMessage('proveedor_id debe ser un entero positivo.').toInt(),
 
   body('precio')
@@ -75,6 +77,7 @@ const crearValidator = [
 
   body('precio_costo')
     .optional({ nullable: true })
+    .customSanitizer(v => (v === '' || v === undefined || v === null) ? undefined : v)
     .isFloat({ min: 0 }).withMessage('El precio de costo debe ser mayor o igual a 0.').toFloat(),
 
   body('stock')
@@ -97,6 +100,7 @@ const crearValidator = [
 
   body('peso_gr')
     .optional({ nullable: true })
+    .customSanitizer(v => (v === '' || v === undefined || v === null) ? undefined : v)
     .isInt({ min: 0 }).withMessage('peso_gr debe ser un entero no negativo.').toInt(),
 
   body('is_destacado')

@@ -15,7 +15,7 @@ const AdminDashboard = () => {
     const fetchStats = async () => {
       try {
         setLoading(true);
-        const response = await adminApi.get('/dashboard');
+        const response = await adminApi.get('/dashboard/stats');
         // Handle axios response (.data) vs fetch response
         setStats(response.data || response || {});
         setError(null);
@@ -46,7 +46,7 @@ const AdminDashboard = () => {
           <div className={sharedStyles.statCard || 'stat-card'}>
             <div className={sharedStyles.statIcon || 'stat-icon'}>📦</div>
             <div className={sharedStyles.statValue || 'stat-value'}>
-              {stats?.totalProductos || 0}
+              {stats?.cantidades?.productos ?? 0}
             </div>
             <div className={sharedStyles.statLabel || 'stat-label'}>Total Productos Activos</div>
           </div>
@@ -54,7 +54,7 @@ const AdminDashboard = () => {
           <div className={sharedStyles.statCard || 'stat-card'}>
             <div className={sharedStyles.statIcon || 'stat-icon'}>⚠️</div>
             <div className={sharedStyles.statValue || 'stat-value'} style={{ color: '#d32f2f' }}>
-              {stats?.productosStockBajo || 0}
+              {(stats?.alertas_stock?.sinStock ?? 0) + (stats?.alertas_stock?.pocoStock ?? 0)}
             </div>
             <div className={sharedStyles.statLabel || 'stat-label'}>Productos Stock Bajo</div>
           </div>
@@ -62,7 +62,7 @@ const AdminDashboard = () => {
           <div className={sharedStyles.statCard || 'stat-card'}>
             <div className={sharedStyles.statIcon || 'stat-icon'}>🏷️</div>
             <div className={sharedStyles.statValue || 'stat-value'}>
-              {stats?.totalCategorias || 0}
+              {stats?.cantidades?.categorias ?? 0}
             </div>
             <div className={sharedStyles.statLabel || 'stat-label'}>Total Categorías</div>
           </div>
@@ -70,7 +70,7 @@ const AdminDashboard = () => {
           <div className={sharedStyles.statCard || 'stat-card'}>
             <div className={sharedStyles.statIcon || 'stat-icon'}>🛒</div>
             <div className={sharedStyles.statValue || 'stat-value'}>
-              {stats?.totalOrdenes || 0}
+              {stats?.totalOrdenes ?? 0}
             </div>
             <div className={sharedStyles.statLabel || 'stat-label'}>Total Órdenes/Pedidos</div>
           </div>

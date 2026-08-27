@@ -31,10 +31,10 @@ const Producto = sequelize.define('Producto', {
 
   marca_id: {
     type:       DataTypes.INTEGER.UNSIGNED,
-    allowNull:  false,
+    allowNull:  true,
     references: { model: 'marcas', key: 'id' },
     onUpdate:   'CASCADE',
-    onDelete:   'RESTRICT',
+    onDelete:   'SET NULL',
   },
 
   proveedor_id: {

@@ -2,7 +2,8 @@
 
 const multer   = require('multer');
 const ApiError = require('../utils/ApiError');
-const { MAX_BYTES, ALLOWED_FORMATS } = require('../services/cloudinary.service');
+const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
+const ALLOWED_FORMATS = ['png', 'jpg', 'jpeg', 'webp'];
 
 /**
  * upload.middleware.js

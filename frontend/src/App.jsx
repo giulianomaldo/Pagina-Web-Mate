@@ -24,6 +24,7 @@ const AdminProveedores   = lazy(() => import('./pages/Admin/Proveedores/AdminPro
 const AdminBanners       = lazy(() => import('./pages/Admin/Banners/AdminBanners'));
 const AdminPromociones   = lazy(() => import('./pages/Admin/Promociones/AdminPromociones'));
 const AdminConfiguracion = lazy(() => import('./pages/Admin/Configuracion/AdminConfiguracion'));
+const AdminOrdenes       = lazy(() => import('./pages/Admin/Ordenes/AdminOrdenes'));
 
 function PageLoader() {
   return (
@@ -70,6 +71,7 @@ export default function App() {
                 <Route path="banners"      element={<AdminBanners />}       />
                 <Route path="promociones"  element={<AdminPromociones />}   />
                 <Route path="configuracion" element={<AdminConfiguracion />} />
+                <Route path="pedidos"      element={<AdminOrdenes />}       />
               </Route>
             </Routes>
           </Suspense>

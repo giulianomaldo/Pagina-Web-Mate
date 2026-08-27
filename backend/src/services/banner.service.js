@@ -1,18 +1,18 @@
 'use strict';
 
 const bannerRepo = require('../repositories/banner.repository');
-const cloudinarySvc = require('./cloudinary.service');
+const storageSvc = require('./supabase.service');
 const ApiError = require('../utils/ApiError');
 
 /**
  * banner.service.js
  */
 
-const CLOUDINARY_FOLDER = 'encontrarte/banners';
+const STORAGE_FOLDER = 'encontrarte/banners';
 
 async function uploadImage(file) {
   if (!file) return {};
-  const { url, public_id } = await cloudinarySvc.uploadBuffer(file.buffer, CLOUDINARY_FOLDER);
+  const { url, public_id } = await storageSvc.uploadBuffer(file.buffer, STORAGE_FOLDER);
   return { imagen_url: url, imagen_public_id: public_id };
 }
 
@@ -32,11 +32,18 @@ async function create(data, file, adminId) {
   
   const imageData = await uploadImage(file);
   
-  return bannerRepo.create({
-    ...data,
-    creado_por: adminId,
-    ...imageData,
-  });
+  try {
+    return await bannerRepo.create({
+      ...data,
+      creado_por: adminId,
+      ...imageData,
+    });
+  } catch (err) {
+    if (imageData.imagen_public_id) {
+      await storageSvc.deleteImage(imageData.imagen_public_id).catch(console.error);
+    }
+    throw err;
+  }
 }
 
 async function update(id, data, file) {
@@ -45,20 +52,33 @@ async function update(id, data, file) {
 
   let imageData = {};
   if (file) {
-    const { url, public_id } = await cloudinarySvc.uploadBuffer(file.buffer, CLOUDINARY_FOLDER);
-    await cloudinarySvc.deleteImage(banner.imagen_public_id);
+    const { url, public_id } = await storageSvc.uploadBuffer(
+      file.buffer,
+      STORAGE_FOLDER,
+    );
     imageData.imagen_url = url;
     imageData.imagen_public_id = public_id;
   }
 
-  return bannerRepo.update(banner, { ...data, ...imageData });
+  try {
+    const updated = await bannerRepo.update(banner, { ...data, ...imageData });
+    if (imageData.imagen_public_id && banner.imagen_public_id) {
+      await storageSvc.deleteImage(banner.imagen_public_id).catch(console.error);
+    }
+    return updated;
+  } catch (err) {
+    if (imageData.imagen_public_id) {
+      await storageSvc.deleteImage(imageData.imagen_public_id).catch(console.error);
+    }
+    throw err;
+  }
 }
 
 async function destroy(id) {
   const banner = await bannerRepo.findById(id);
   if (!banner) throw ApiError.notFound('Banner no encontrado.');
 
-  await cloudinarySvc.deleteImage(banner.imagen_public_id);
+  await storageSvc.deleteImage(banner.imagen_public_id);
   await bannerRepo.destroy(banner);
 }
 

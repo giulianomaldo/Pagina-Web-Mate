@@ -34,14 +34,10 @@ module.exports = {
   },
 
   db: {
+    // URL de conexión completa (Postgres/Supabase)
+    url:      process.env.DB_URL,
     // SQLite (por defecto)
-    storage: process.env.DB_STORAGE || null,
-    // MySQL (opcional — para producción)
-    host:     process.env.DB_HOST,
-    port:     parseInt(process.env.DB_PORT, 10) || 3306,
-    name:     process.env.DB_NAME,
-    user:     process.env.DB_USER,
-    password: process.env.DB_PASS || '',
+    storage:  process.env.DB_STORAGE || null,
   },
 
   jwt: {
@@ -51,10 +47,10 @@ module.exports = {
     refreshExpiresIn:   process.env.JWT_REFRESH_EXPIRES_IN  || '7d',
   },
 
-  cloudinary: {
-    cloudName:  process.env.CLOUDINARY_CLOUD_NAME,
-    apiKey:     process.env.CLOUDINARY_API_KEY,
-    apiSecret:  process.env.CLOUDINARY_API_SECRET,
+  supabase: {
+    url:    process.env.SUPABASE_URL,
+    key:    process.env.SUPABASE_KEY,
+    bucket: process.env.SUPABASE_BUCKET || 'encontrarte',
   },
 
   cors: {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import sharedStyles from '../admin.shared.module.css';
 import styles from './AdminMarcas.module.css';
 import { adminApi } from '../../../utils/api';
@@ -8,9 +8,12 @@ const AdminMarcas = () => {
     const { admin } = useAuth();
     const [marcas, setMarcas] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
+    const [saving, setSaving] = useState(false);
     const [formData, setFormData] = useState({
-        id: null, nombre: '', slug: '', descripcion: '', imagen_url: '', is_active: true
+        id: null, nombre: '', slug: '', descripcion: '', is_active: true
     });
+    const [logoFile, setLogoFile] = useState(null);
+    const [logoPreview, setLogoPreview] = useState('');
 
     const fetchMarcas = async () => {
         try {
@@ -37,47 +40,59 @@ const AdminMarcas = () => {
         });
     };
 
+    const handleLogoChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        setLogoFile(file);
+        setLogoPreview(URL.createObjectURL(file));
+    };
+
     const handleSave = async (e) => {
         e.preventDefault();
+        setSaving(true);
         try {
+            const fd = new FormData();
+            fd.append('nombre', formData.nombre);
+            fd.append('slug', formData.slug);
+            fd.append('descripcion', formData.descripcion || '');
+            fd.append('is_active', formData.is_active ? 'true' : 'false');
+            if (logoFile) fd.append('logo', logoFile);
+
             if (formData.id) {
-                await adminApi.put(`/api/marcas/${formData.id}`, formData);
+                await adminApi.put(`/marcas/${formData.id}`, fd);
             } else {
-                await adminApi.post('/marcas', formData);
+                await adminApi.post('/marcas', fd);
             }
             setModalOpen(false);
             fetchMarcas();
         } catch (error) {
             console.error(error);
+        } finally {
+            setSaving(false);
         }
     };
 
     const handleEdit = (marca) => {
-        setFormData(marca);
+        setFormData({ ...marca });
+        setLogoFile(null);
+        setLogoPreview(marca.logo_url || '');
         setModalOpen(true);
     };
 
     const handleToggleActive = async (marca) => {
         try {
-            if (marca.is_active) {
-                await adminApi.patch(`/api/marcas/${marca.id}/desactivar`);
-            } else {
-                await adminApi.patch(`/api/marcas/${marca.id}/activar`);
-            }
+            const ep = marca.is_active ? `/marcas/${marca.id}/desactivar` : `/marcas/${marca.id}/activar`;
+            await adminApi.patch(ep);
             fetchMarcas();
-        } catch (error) {
-            console.error(error);
-        }
+        } catch (error) { console.error(error); }
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm("¿Seguro que deseas eliminar esta marca?")) return;
+        if (!window.confirm('¿Seguro que deseas eliminar esta marca?')) return;
         try {
-            await adminApi.delete(`/api/marcas/${id}`);
+            await adminApi.delete(`/marcas/${id}`);
             fetchMarcas();
-        } catch (error) {
-            console.error(error);
-        }
+        } catch (error) { console.error(error); }
     };
 
     return (
@@ -85,45 +100,53 @@ const AdminMarcas = () => {
             <div className={sharedStyles.header}>
                 <h1>Marcas</h1>
                 <button id="marcas-new-btn" className={sharedStyles.btnPrimary} onClick={() => {
-                    setFormData({ id: null, nombre: '', slug: '', descripcion: '', imagen_url: '', is_active: true });
+                    setFormData({ id: null, nombre: '', slug: '', descripcion: '', is_active: true });
+                    setLogoFile(null); setLogoPreview('');
                     setModalOpen(true);
-                }}>Nueva Marca</button>
+                }}>+ Nueva Marca</button>
             </div>
             
-            <table className={sharedStyles.table}>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Slug</th>
-                        <th>Descripción</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {marcas.map(marca => (
-                        <tr key={marca.id}>
-                            <td>{marca.nombre}</td>
-                            <td>{marca.slug}</td>
-                            <td>{marca.descripcion}</td>
-                            <td>
-                                <span className={marca.is_active ? sharedStyles.badgeGreen : sharedStyles.badgeRed}>
-                                    {marca.is_active ? 'Activo' : 'Inactivo'}
-                                </span>
-                            </td>
-                            <td>
-                                <button className={sharedStyles.btnAction} onClick={() => handleEdit(marca)}>Editar</button>
-                                <button className={sharedStyles.btnAction} onClick={() => handleToggleActive(marca)}>
-                                    {marca.is_active ? 'Desactivar' : 'Activar'}
-                                </button>
-                                {admin?.is_superadmin && (
-                                    <button className={sharedStyles.btnActionDelete} onClick={() => handleDelete(marca.id)}>Eliminar</button>
-                                )}
-                            </td>
+                <div className={sharedStyles.tableWrap}>
+                <table className={sharedStyles.table}>
+                    <thead>
+                        <tr>
+                            <th>Logo</th>
+                            <th>Nombre</th>
+                            <th>Slug</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {marcas.map(marca => (
+                            <tr key={marca.id}>
+                                <td>
+                                    {marca.logo_url
+                                        ? <img src={marca.logo_url} alt={marca.nombre} style={{ width: 48, height: 48, objectFit: 'contain', borderRadius: 6 }} />
+                                        : <span style={{ color: '#aaa', fontSize: 12 }}>Sin logo</span>
+                                    }
+                                </td>
+                                <td><strong>{marca.nombre}</strong></td>
+                                <td style={{ fontSize: 12, color: '#888' }}>{marca.slug}</td>
+                                <td>
+                                    <span className={marca.is_active ? sharedStyles.badgeGreen : sharedStyles.badgeRed}>
+                                        {marca.is_active ? 'Activo' : 'Inactivo'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button className={sharedStyles.btnAction} onClick={() => handleEdit(marca)}>Editar</button>
+                                    <button className={sharedStyles.btnAction} onClick={() => handleToggleActive(marca)}>
+                                        {marca.is_active ? 'Desactivar' : 'Activar'}
+                                    </button>
+                                    {admin?.rol === 'superadmin' && (
+                                        <button className={sharedStyles.btnActionDelete} onClick={() => handleDelete(marca.id)}>Eliminar</button>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                </div>
 
             {modalOpen && (
                 <div className={sharedStyles.modalOverlay}>
@@ -131,7 +154,7 @@ const AdminMarcas = () => {
                         <h2>{formData.id ? 'Editar Marca' : 'Nueva Marca'}</h2>
                         <form onSubmit={handleSave}>
                             <div className={sharedStyles.formGroup}>
-                                <label>Nombre</label>
+                                <label>Nombre *</label>
                                 <input type="text" name="nombre" value={formData.nombre} onChange={handleFormChange} required />
                             </div>
                             <div className={sharedStyles.formGroup}>
@@ -140,21 +163,25 @@ const AdminMarcas = () => {
                             </div>
                             <div className={sharedStyles.formGroup}>
                                 <label>Descripción</label>
-                                <textarea name="descripcion" value={formData.descripcion} onChange={handleFormChange}></textarea>
+                                <textarea name="descripcion" value={formData.descripcion} onChange={handleFormChange} rows={3} />
                             </div>
                             <div className={sharedStyles.formGroup}>
-                                <label>Imagen URL</label>
-                                <input type="text" name="imagen_url" value={formData.imagen_url} onChange={handleFormChange} />
+                                <label>Logo</label>
+                                {logoPreview && (
+                                    <img src={logoPreview} alt="preview" style={{ width: 80, height: 80, objectFit: 'contain', borderRadius: 6, marginBottom: 8, display: 'block' }} />
+                                )}
+                                <input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleLogoChange} style={{ width: '100%' }} />
+                                <small style={{ color: '#888' }}>PNG, JPG o WEBP — máx. 5MB</small>
                             </div>
                             <div className={sharedStyles.formGroupCheckbox}>
                                 <label>
                                     <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleFormChange} />
-                                    Activo
+                                    &nbsp;Activo
                                 </label>
                             </div>
                             <div className={sharedStyles.modalActions}>
                                 <button type="button" onClick={() => setModalOpen(false)} className={sharedStyles.btnSecondary}>Cancelar</button>
-                                <button type="submit" className={sharedStyles.btnPrimary}>Guardar</button>
+                                <button type="submit" className={sharedStyles.btnPrimary} disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
                             </div>
                         </form>
                     </div>

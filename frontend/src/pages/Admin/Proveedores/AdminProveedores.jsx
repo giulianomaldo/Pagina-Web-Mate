@@ -9,7 +9,7 @@ const AdminProveedores = () => {
     const [proveedores, setProveedores] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [formData, setFormData] = useState({
-        id: null, nombre: '', contacto_nombre: '', email: '', telefono: '', direccion: '', notas: '', is_active: true
+        id: null, nombre: '', nombre_contacto: '', email: '', telefono: '', direccion: '', notas: '', is_active: true
     });
 
     const fetchProveedores = async () => {
@@ -35,7 +35,7 @@ const AdminProveedores = () => {
         e.preventDefault();
         try {
             if (formData.id) {
-                await adminApi.put(`/api/proveedores/${formData.id}`, formData);
+                await adminApi.put(`/proveedores/${formData.id}`, formData);
             } else {
                 await adminApi.post('/proveedores', formData);
             }
@@ -53,16 +53,13 @@ const AdminProveedores = () => {
 
     const handleToggleActive = async (prov) => {
         try {
-            if (prov.is_active) {
-                await adminApi.patch(`/api/proveedores/${prov.id}/desactivar`); // Or put with changed is_active
-            } else {
-                await adminApi.patch(`/api/proveedores/${prov.id}/activar`);
-            }
+            const ep = prov.is_active ? `/proveedores/${prov.id}/desactivar` : `/proveedores/${prov.id}/activar`;
+            await adminApi.patch(ep);
             fetchProveedores();
         } catch (error) {
-            // fallback if patch active/deactive doesn't exist for proveedores
+            // fallback: update via PUT
             try {
-                await adminApi.put(`/api/proveedores/${prov.id}`, { ...prov, is_active: !prov.is_active });
+                await adminApi.put(`/proveedores/${prov.id}`, { ...prov, is_active: !prov.is_active });
                 fetchProveedores();
             } catch(e) { console.error(e); }
         }
@@ -71,7 +68,7 @@ const AdminProveedores = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("¿Seguro que deseas eliminar este proveedor?")) return;
         try {
-            await adminApi.delete(`/api/proveedores/${id}`);
+            await adminApi.delete(`/proveedores/${id}`);
             fetchProveedores();
         } catch (error) {
             console.error(error);
@@ -83,7 +80,7 @@ const AdminProveedores = () => {
             <div className={sharedStyles.header}>
                 <h1>Proveedores</h1>
                 <button id="proveedores-new-btn" className={sharedStyles.btnPrimary} onClick={() => {
-                    setFormData({ id: null, nombre: '', contacto_nombre: '', email: '', telefono: '', direccion: '', notas: '', is_active: true });
+                    setFormData({ id: null, nombre: '', nombre_contacto: '', email: '', telefono: '', direccion: '', notas: '', is_active: true });
                     setModalOpen(true);
                 }}>Nuevo Proveedor</button>
             </div>
@@ -103,7 +100,7 @@ const AdminProveedores = () => {
                     {proveedores.map(prov => (
                         <tr key={prov.id}>
                             <td>{prov.nombre}</td>
-                            <td>{prov.contacto_nombre}</td>
+                            <td>{prov.nombre_contacto}</td>
                             <td>{prov.email}</td>
                             <td>{prov.telefono}</td>
                             <td>
@@ -136,7 +133,7 @@ const AdminProveedores = () => {
                             </div>
                             <div className={sharedStyles.formGroup}>
                                 <label>Contacto</label>
-                                <input type="text" name="contacto_nombre" value={formData.contacto_nombre} onChange={handleFormChange} />
+                                <input type="text" name="nombre_contacto" value={formData.nombre_contacto} onChange={handleFormChange} />
                             </div>
                             <div className={sharedStyles.formGroup}>
                                 <label>Email</label>

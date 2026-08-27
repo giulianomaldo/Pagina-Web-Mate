@@ -1,7 +1,7 @@
 'use strict';
 
 const { Op, Sequelize } = require('sequelize');
-const { Producto, Categoria, Marca } = require('../models');
+const { Producto, Categoria, Marca, Orden } = require('../models');
 
 /**
  * dashboard.service.js
@@ -16,6 +16,7 @@ async function getStats() {
     totalProductos,
     totalCategorias,
     totalMarcas,
+    totalOrdenes,
     totalSinStock,
     totalPocoStock,
     ultimosAgregados,
@@ -25,6 +26,7 @@ async function getStats() {
     Producto.count(),
     Categoria.count(),
     Marca.count(),
+    Orden.count(),
 
     // 2. Productos sin stock (cuenta)
     Producto.count({ where: { stock: 0 } }),
@@ -64,6 +66,7 @@ async function getStats() {
       categorias: totalCategorias,
       marcas: totalMarcas,
     },
+    totalOrdenes,
     alertas_stock: {
       sinStock: totalSinStock,
       pocoStock: totalPocoStock,
